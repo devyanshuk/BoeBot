@@ -50,30 +50,41 @@ void update_sensors() {
 }
 
 void check_for_button_press(){
- return;
+	bool pressed = digitalRead(button_pin) == 0;
+	if (pressed && !boebot.button_being_pressed){
+		boebot.button_being_pressed = true;
+	}
+	else if (!pressed && boebot.button_being_pressed){
+		boebot.button_being_pressed = false;
+		boebot.button_press_count++;
+	}
 }
 
 void loop(void)
 {
-	update_sensors();
 	check_for_button_press();
-	if (!boebot.stop_robot && boebot.button_press_count == 1) {
-		if ((boebot.current_coord == boebot.final_coord) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
-			if (elapsed_time >= boebot.final_coord.total_time && curr_index < len) {
-				boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov, boebot.direction_matters);
-				boebot.reset_movements();
+	//Serial.println(boebot.button_press_count);
+	if (boebot.button_press_count == 1){
+		update_sensors();
+		if (!boebot.stop_robot) {
+			if ((boebot.current_coord == boebot.final_coord) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
+				if (elapsed_time >= boebot.final_coord.total_time && curr_index < len) {
+					boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov, boebot.direction_matters);
+					boebot.reset_movements();
+				}
+				else if (elapsed_time < boebot.final_coord.total_time) {
+					boebot.align_middle_sensors_when_waiting();
+				}
+				else if (curr_index == len) {
+					boebot.stop_robot = true;
+				}
 			}
-			else if (elapsed_time < boebot.final_coord.total_time) {
-				boebot.align_middle_sensors_when_waiting();
-			}
-			else if (curr_index == len) {
-				boebot.stop_robot = true;
-			}
+			if (!boebot.being_rotated) boebot.change_coordinates();
+			boebot.rotate();
+			boebot.move_forward();
+			boebot.copy_sensor_states();
 		}
-		if (!boebot.being_rotated) boebot.change_coordinates();
-		boebot.rotate();
-		boebot.move_forward();
-		boebot.copy_sensor_states();
+		else boebot.pause();
 		update_time();
 	}
 	else boebot.pause();
