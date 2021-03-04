@@ -5,15 +5,7 @@
 
 bool eval_new_pos();
 
-String mov = "  A1Na1t38 	3 b t100\
-2c  t195e1t0 5e t367\
-\
-\
-4d\
-t\
-0\
-5\
-e t0 4d t0 5e t0 c4 t0 5a t760 a3 t838 b4 t916 a2 t960 b3 t1074 a2 t0 1e t0 a1 t000";
+String mov = "  A1N a2t50 a3t100 b3t200 b3st250 b3nt300 b3et350 A1t500";
 bool stop = false;
 
 Robot boebot;
@@ -48,13 +40,13 @@ void loop(void)
 {
 	update_sensors();
 	if (!boebot.stop_robot) {
-		if (boebot.current_coord == boebot.final_coord) {
+		if ((boebot.current_coord == boebot.final_coord) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
 			if (elapsed_time >= boebot.final_coord.total_time && curr_index < len) {
-				boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov);
+				boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov, boebot.direction_matters);
 				boebot.reset_movements();
 			}
 			else if (elapsed_time < boebot.final_coord.total_time) {
-				boebot.pause();
+				boebot.align_middle_sensors_when_waiting();
 			}
 			else if (curr_index == len) {
 				boebot.stop_robot = true;

@@ -22,10 +22,11 @@ private:
 	bool translated = false;
 	int passed_coordinate_count = 0;
 
-	void rotate_in_x_axis();
-	void rotate_in_y_axis();
+	void rotate_in_x_axis(bool is_greater);
+	void rotate_in_y_axis(bool is_greater);
 	void move_(const int & a, const int & b);
 	void eval_new_wheel_values();
+	void rotate_to_a_certain_pos();
 
 
 public:
@@ -43,6 +44,7 @@ public:
 
 	bool stop_robot = false;
 	bool passed_coordinate = false;
+	bool direction_matters = false;
 
 	void attach_servo();
 	void copy_sensor_states();
@@ -57,6 +59,7 @@ public:
 
 	void change_coordinates();
 	void copy_previous_states();
+	void align_middle_sensors_when_waiting();
 	void rotate();
 	void move_forward();
 

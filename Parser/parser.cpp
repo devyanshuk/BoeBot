@@ -18,7 +18,7 @@ enum DIR get_dir_from_char(const char & dir) {
 	EAST;
 }
 
-bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const String & mov) {
+bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const String & mov, bool & direction_matters) {
 	int x = 0;
 	int y = 0;
 	bool yBeforeX = false;
@@ -37,7 +37,10 @@ bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const Strin
 		if (curr_char == "n" || curr_char == "s" || (curr_char == "e" && x != 0 && y != 0) || curr_char == "w") {
 			dir = curr_char;
 			dirFound = true;
-			break;
+			if ((curr_index + 1) < len) {
+				if (mov[curr_index + 1] != 't') break;
+				else continue;
+			}
 		}
 
 		if (x == 0) {
@@ -61,13 +64,13 @@ bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const Strin
 		}
 	}
 	boebot.copy_previous_states();
-	if (!dirFound) {
-		boebot.final_coord.xpos = x;
-		boebot.final_coord.ypos = y;
-		boebot.final_coord.total_time = _time.toInt();
-	}
-	else {
+
+	boebot.final_coord.xpos = x;
+	boebot.final_coord.ypos = y;
+	boebot.final_coord.total_time = _time.toInt();
+	if (dirFound) {
 		boebot.final_coord.dir = get_dir_from_char(dir[0]);
 	}
+	direction_matters = dirFound;
 	return yBeforeX;
 }

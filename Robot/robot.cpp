@@ -2,8 +2,7 @@
 
 #include "Robot.h"
 
-void Robot::rotate_in_x_axis() {
-	bool is_greater = final_coord.xpos > current_coord.xpos;
+void Robot::rotate_in_x_axis(bool is_greater) {
 
 	if ((current_coord.dir == WEST && is_greater) || (current_coord.dir == EAST && !is_greater)) {
 		rotated = true;
@@ -41,8 +40,7 @@ void Robot::rotate_in_x_axis() {
 }
 
 
-void Robot::rotate_in_y_axis() {
-	bool is_greater = final_coord.ypos > current_coord.ypos;
+void Robot::rotate_in_y_axis(bool is_greater) {
 
 	if ((current_coord.dir == NORTH && is_greater) || (current_coord.dir == SOUTH && !is_greater)) {
 		rotated = true;
@@ -120,6 +118,28 @@ void Robot::eval_new_wheel_values() {
 	}
 }
 
+void Robot::align_middle_sensors_when_waiting(){
+	bool b = current_sensors_state[1];
+	bool c = current_sensors_state[2];
+	bool d = current_sensors_state[3];
+
+	if (c && !d && !b){
+		pause();
+	}
+	else if (b && !c) {
+		move_(1570, 1570);
+	}
+	else if (d && !c) {
+		move_(1430, 1430);
+	}
+	else if (c && b && !d) {
+		move_(1530, 1530);
+	}
+	else if (c && d && !b) {
+		move_(1470, 1470);
+	}
+}
+
 void Robot::attach_servo() {
 	left.attach(left_wheel_pin);
 	right.attach(right_wheel_pin);
@@ -193,9 +213,38 @@ void Robot::copy_previous_states() {
 	current_coord = final_coord;
 }
 
+void Robot::rotate_to_a_certain_pos(){
+	if (current_coord.dir == final_coord.dir){
+		pause();
+		return;
+	}
+
+	DIR final = final_coord.dir;
+
+	switch (current_coord.dir){
+		case NORTH:
+			final == SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
+			break;
+		case SOUTH:
+			final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
+			break;
+		case EAST:
+			final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
+			break;
+		case WEST:
+			final == NORTH ? rotate_in_y_axis(false) : SOUTH ? rotate_in_y_axis(true) : rotate_in_x_axis(false);
+			break;
+	}
+}
+
 void Robot::rotate() {
 	if (rotated) {
 		being_rotated = false;
+		return;
+	}
+	if (direction_matters){
+		rotate_to_a_certain_pos();
+		being_rotated = true;
 		return;
 	}
 	if (yBeforeX || current_coord.xpos == final_coord.xpos) {
@@ -204,12 +253,12 @@ void Robot::rotate() {
 			being_rotated = false;
 		}
 		else {
-			rotate_in_y_axis();
+			rotate_in_y_axis(final_coord.ypos > current_coord.ypos);
 			being_rotated = true;
 		}
 	}
 	else if (!yBeforeX && current_coord.xpos != final_coord.xpos) {
-		rotate_in_x_axis();
+		rotate_in_x_axis(final_coord.xpos > current_coord.xpos);
 		being_rotated = true;
 	}
 	else being_rotated = false;
@@ -217,7 +266,7 @@ void Robot::rotate() {
 
 
 void Robot::move_forward() {
-	if (!rotated || translated) {
+	if (!rotated || translated || direction_matters) {
 		return;
 	}
 
