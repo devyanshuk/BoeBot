@@ -1,5 +1,4 @@
-#ifndef COORDINATES_CPP
-#define COORDINATES_CPP
+#pragma once
 
 enum DIR { NORTH = 1, SOUTH = 2, EAST = 3, WEST = 4 };
 
@@ -23,5 +22,3 @@ public:
 		return xpos == other.xpos && ypos == other.ypos;
 	}
 };
-
-#endif

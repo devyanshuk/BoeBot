@@ -1,5 +1,4 @@
-#ifndef ROBOT_H_
-#define ROBOT_H_
+#pragma once
 
 #include <Servo.h>
 #include "../Coordinates/coordinates.hpp"
@@ -68,5 +67,3 @@ public:
 	void move_forward();
 
 };
-
-#endif

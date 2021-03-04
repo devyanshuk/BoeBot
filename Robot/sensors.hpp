@@ -1,6 +1,4 @@
-#ifndef SENSORS
-#define SENSORS
-
+#pragma once
 class Sensor {
 
 private:
@@ -24,5 +22,3 @@ public:
 		return _sensors[index];
 	}
 };
-
-#endif
