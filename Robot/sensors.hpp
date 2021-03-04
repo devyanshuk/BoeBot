@@ -8,7 +8,7 @@ private:
 
 public:
 
-	Sensor & operator=(const bool _sensors[5]) {
+	Sensor & operator=(const bool (&_sensors)[5]) {
 		for ( int i = 0; i < 5; i++ ) {
 			this->_sensors[i] = _sensors[i];
 		}

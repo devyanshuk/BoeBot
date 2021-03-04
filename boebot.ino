@@ -6,16 +6,7 @@
 bool eval_new_pos();
 
 //String mov = "  A1N a2t50 a3t100 a4t150 a5t200 b5t250 1at300";
-String mov = "\
- A1Na1t38 	3 b t100\
-2c  t195e1t0 5e t367\
-\
-\
-4d\
-t\
-0\
-5\
-e t0 4d t0 5e t0 c4 t0 5a t760 a3 t838 b4 t916 a2 t960 b3 t1074 a2 t0 1e t0 a1 t000";
+String mov = "A1N b1t40 c3t100 c3wt200";
 
 
 
@@ -26,6 +17,7 @@ Robot boebot;
 int len;
 int curr_index = 0;
 unsigned long elapsed_time;
+unsigned long paused_time;
 
 void setup()
 {
@@ -37,7 +29,7 @@ void setup()
 }
 
 void update_time() {
-	elapsed_time = millis() / 100;
+	elapsed_time = (millis() / 100) - paused_time;
 }
 
 void update_sensors() {
@@ -74,6 +66,7 @@ void loop(void)
 				}
 				else if (elapsed_time < boebot.final_coord.total_time) {
 					boebot.align_middle_sensors_when_waiting();
+					//boebot.pause();
 				}
 				else if (curr_index == len) {
 					boebot.stop_robot = true;
@@ -87,5 +80,8 @@ void loop(void)
 		else boebot.pause();
 		update_time();
 	}
-	else boebot.pause();
+	else {
+		paused_time = millis() / 100;
+		boebot.pause();
+	}
 }

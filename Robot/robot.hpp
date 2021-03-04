@@ -4,7 +4,7 @@
 #include <Servo.h>
 #include "../Coordinates/coordinates.cpp"
 #include "../constants.h"
-#include "sensors.cpp"
+#include "sensors.hpp"
 
 class Robot {
 
@@ -54,7 +54,6 @@ public:
 	void attach_servo();
 	void copy_sensor_states();
 	void reset_movements();
-	void move_robot();
 
 	void forward();
 	void backward();
