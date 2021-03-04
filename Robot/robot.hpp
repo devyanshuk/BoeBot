@@ -2,7 +2,7 @@
 #define ROBOT_H_
 
 #include <Servo.h>
-#include "../Coordinates/coordinates.cpp"
+#include "../Coordinates/coordinates.hpp"
 #include "../constants.h"
 #include "sensors.hpp"
 
