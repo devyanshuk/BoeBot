@@ -24,7 +24,7 @@ constexpr int sensors[5] = { right_most_sensor_pin, right_pin, middle_sensor_pin
 
 //movement
 constexpr int forward_align = 3050;
-constexpr int rotation_align = 2220;
+constexpr int rotation_align = 3220;
 
 
 #endif

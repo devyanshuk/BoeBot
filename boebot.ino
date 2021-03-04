@@ -49,10 +49,15 @@ void update_sensors() {
 	//display_sensors(new_state);
 }
 
+void check_for_button_press(){
+ return;
+}
+
 void loop(void)
 {
 	update_sensors();
-	if (!boebot.stop_robot) {
+	check_for_button_press();
+	if (!boebot.stop_robot && boebot.button_press_count == 1) {
 		if ((boebot.current_coord == boebot.final_coord) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
 			if (elapsed_time >= boebot.final_coord.total_time && curr_index < len) {
 				boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov, boebot.direction_matters);
@@ -69,7 +74,7 @@ void loop(void)
 		boebot.rotate();
 		boebot.move_forward();
 		boebot.copy_sensor_states();
+		update_time();
 	}
 	else boebot.pause();
-	update_time();
 }

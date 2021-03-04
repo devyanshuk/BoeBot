@@ -48,6 +48,8 @@ public:
 	bool passed_coordinate = false;
 	bool direction_matters = false;
 
+	int button_press_count = 1;
+
 	void attach_servo();
 	void copy_sensor_states();
 	void reset_movements();
