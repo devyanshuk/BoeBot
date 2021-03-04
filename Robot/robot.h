@@ -21,6 +21,8 @@ private:
 	int y_adjustment_count = 0;
 	bool translated = false;
 	int passed_coordinate_count = 0;
+	bool is_rotating_left = false;
+	bool is_rotating_right = false;
 
 	void rotate_in_x_axis(bool is_greater);
 	void rotate_in_y_axis(bool is_greater);

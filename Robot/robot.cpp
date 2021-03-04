@@ -27,8 +27,10 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		rotated = true;
 		translated = false;
 		x_adjusted = false;
+		is_rotating_left = false;
+		is_rotating_right = false;
 	}
-	else if (current_sensors_state[2] && !previous_sensors_state[2]) {
+	else if ((is_rotating_left && current_sensors_state[3] && !previous_sensors_state[3]) || (is_rotating_right && current_sensors_state[1] && !previous_sensors_state[1])) {
 		rotation_count++;
 		if (((is_greater && current_coord.dir == EAST) || (!is_greater && current_coord.dir == WEST)) && rotation_count == 2) {
 			x_adjusted = true;
@@ -65,8 +67,10 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		rotated = true;
 		translated = false;
 		y_adjusted = false;
+		is_rotating_left = false;
+		is_rotating_right = false;
 	}
-	else if (current_sensors_state[2] && !previous_sensors_state[2]) {
+	else if ((is_rotating_left && current_sensors_state[3] && !previous_sensors_state[3]) || (is_rotating_right && current_sensors_state[1] && !previous_sensors_state[1])) {
 		rotation_count++;
 		if (((is_greater && current_coord.dir == SOUTH) || (!is_greater && current_coord.dir == NORTH)) && rotation_count == 2) {
 			y_adjusted = true;
@@ -174,10 +178,12 @@ void Robot::pause() {
 
 void Robot::leftTurn() {
 	move_(1300, 1300);
+	is_rotating_left = true;
 }
 
 void Robot::rightTurn() {
 	move_(1700, 1700);
+	is_rotating_right = true;
 }
 
 
