@@ -6,7 +6,7 @@
 bool eval_new_pos();
 
 //String mov = "  A1N a2t50 a3t100 a4t150 a5t200 b5t250 1at300";
-String mov = "A1N b1t40 c3t100 c3wt200";
+String mov = "a1n 2bt400 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 
 
