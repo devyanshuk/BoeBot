@@ -5,14 +5,15 @@
 
 bool eval_new_pos();
 
-//String mov = "  A1N a2t50 a3t100 a4t150 a5t200 b5t250 1at300";
-String mov = "a1n 2bt400 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
+String mov = "  A1N 2ct60 2cnt90";
+//String mov = "a1n 2bt400 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 
 
 bool stop = false;
 
 Robot boebot;
+int val = 1;
 
 int len;
 int curr_index = 0;
@@ -59,23 +60,31 @@ void loop(void)
 	if (boebot.button_press_count == 1){
 		update_sensors();
 		if (!boebot.stop_robot) {
-			if ((boebot.current_coord == boebot.final_coord) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
-				if (elapsed_time >= boebot.final_coord.total_time && curr_index < len) {
+			if (boebot.current_coord == boebot.final_coord) {
+				if ((elapsed_time >= boebot.final_coord.total_time) && (curr_index < len) && (boebot.direction_matters ? boebot.current_coord.dir == boebot.final_coord.dir : true)) {
+					digitalWrite(led_pin,val);
+					val = val == 1 ? 0 : 1;
 					boebot.yBeforeX = eval_new_pos(boebot, len, curr_index, mov, boebot.direction_matters);
 					boebot.reset_movements();
 				}
-				else if (elapsed_time < boebot.final_coord.total_time) {
+				else if ((curr_index < len) && (elapsed_time < boebot.final_coord.total_time)) {
 					boebot.align_middle_sensors_when_waiting();
 					//boebot.pause();
 				}
-				else if (curr_index == len) {
+				else if (curr_index >= len && (!boebot.direction_matters || (boebot.direction_matters && boebot.current_coord.dir == boebot.final_coord.dir))) {
 					boebot.stop_robot = true;
 				}
 			}
-			if (!boebot.being_rotated) boebot.change_coordinates();
-			boebot.rotate();
-			boebot.move_forward();
-			boebot.copy_sensor_states();
+			if (boebot.direction_matters){
+				digitalWrite(led_pin, 1);
+			}
+			else digitalWrite(led_pin , 0);
+			if (!boebot.stop_robot){
+				if (!boebot.being_rotated) boebot.change_coordinates();
+				boebot.rotate();
+				boebot.move_forward();
+				boebot.copy_sensor_states();
+			}
 		}
 		else boebot.pause();
 		update_time();

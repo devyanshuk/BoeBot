@@ -29,8 +29,6 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		x_adjusted = false;
 		is_rotating_left = false;
 		is_rotating_right = false;
-		//direction_matters = false;
-		pause();
 	}
 	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
@@ -71,8 +69,6 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		y_adjusted = false;
 		is_rotating_left = false;
 		is_rotating_right = false;
-		//direction_matters = false;
-		pause();
 	}
 	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
@@ -160,7 +156,6 @@ void Robot::copy_sensor_states() {
 void Robot::reset_movements() {
 	rotated = false;
 	translated = false;
-	direction_matters = false;
 }
 
 
@@ -220,25 +215,29 @@ void Robot::copy_previous_states() {
 }
 
 void Robot::rotate_to_a_certain_pos(){
-	if (current_coord.dir == final_coord.dir){
-		pause();
-		return;
-	}
+	// if (current_coord.dir == final_coord.dir){
+	// 	direction_matters = false;
+	// 	rotated = true;
+	// 	pause();
+	// 	return;
+	// }
 
 	DIR final = final_coord.dir;
 
+	being_rotated = true;
+
 	switch (current_coord.dir){
 		case NORTH:
-			final == SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
+			final == WEST ? rotate_in_x_axis(true) : EAST ? rotate_in_x_axis(false) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
 			break;
 		case SOUTH:
-			final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
+			final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_y_axis(false);
 			break;
 		case EAST:
-			final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
+			final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
 			break;
 		case WEST:
-			final == NORTH ? rotate_in_y_axis(false) : SOUTH ? rotate_in_y_axis(true) : rotate_in_x_axis(false);
+			final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
 			break;
 	}
 }
@@ -246,9 +245,10 @@ void Robot::rotate_to_a_certain_pos(){
 void Robot::rotate() {
 	if (rotated) {
 		being_rotated = false;
+		if (direction_matters) align_middle_sensors_when_waiting();
 		return;
 	}
-	if (direction_matters){
+	if (direction_matters && (current_coord.dir != final_coord.dir)){
 		rotate_to_a_certain_pos();
 		being_rotated = true;
 		return;
@@ -272,12 +272,11 @@ void Robot::rotate() {
 
 
 void Robot::move_forward() {
-	if (!rotated || translated) {
+	if (!rotated || translated || (direction_matters && current_coord.dir == final_coord.dir)) {
 		return;
 	}
 
-	if ((direction_matters && current_coord == final_coord && current_coord.dir == final_coord.dir) ||
-	    (current_coord.xpos == final_coord.xpos && (current_coord.dir == EAST || current_coord.dir == WEST)) ||
+	if ((current_coord.xpos == final_coord.xpos && (current_coord.dir == EAST || current_coord.dir == WEST)) ||
 		(current_coord.ypos == final_coord.ypos && (current_coord.dir == NORTH || current_coord.dir == SOUTH)))
 	{
 		rotated = false;
