@@ -5,7 +5,7 @@
 #include "../Coordinates/coordinates.hpp"
 #include "../Robot/robot.cpp"
 
-bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const String & mov, bool & direction_matters);
+bool eval_new_pos(Position & coord, const int & len, int & curr_index, const String & mov, bool & direction_matters);
 
 void trim_string(String & mov, int & len);
 

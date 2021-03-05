@@ -2,6 +2,27 @@
 
 #include "Robot.hpp"
 
+Robot::Robot() :
+being_rotated ( false ),
+yBeforeX ( false ),
+stop_robot ( false ),
+passed_coordinate (false ),
+direction_matters ( false ),
+button_press_count ( -1 ),
+button_being_pressed ( true ),
+rotated ( false ),
+rotation_count ( 0 ),
+x_adjusted ( false ),
+x_adjustment_count ( 0 ),
+y_adjusted ( false ),
+y_adjustment_count ( 0 ),
+translated ( false ),
+passed_coordinate_count ( 0 ),
+is_rotating_left ( false ),
+is_rotating_right ( false )
+{
+}
+
 void Robot::rotate_in_x_axis(bool is_greater) {
 
 	if ((current_coord.dir == WEST && is_greater) || (current_coord.dir == EAST && !is_greater)) {
@@ -85,8 +106,6 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 void Robot::move_(const int & a, const int & b) {
 	left.writeMicroseconds(a);
 	right.writeMicroseconds(b);
-	leftWheel = a;
-	rightWheel = b;
 }
 
 void Robot::eval_new_wheel_values() {
@@ -158,6 +177,10 @@ void Robot::reset_movements() {
 	translated = false;
 }
 
+void Robot::reset_robot(){
+	Robot();
+}
+
 
 void Robot::forward() {
 	move_(1700, 1300);
@@ -210,7 +233,7 @@ void Robot::change_coordinates() {
 	}
 }
 
-void Robot::copy_previous_states() {
+void Robot::copy_previous_coordinate() {
 	current_coord = final_coord;
 }
 
@@ -248,11 +271,7 @@ void Robot::rotate() {
 		if (direction_matters) align_middle_sensors_when_waiting();
 		return;
 	}
-	if (direction_matters && (current_coord.dir != final_coord.dir)){
-		rotate_to_a_certain_pos();
-		being_rotated = true;
-		return;
-	}
+
 	if (yBeforeX || current_coord.xpos == final_coord.xpos) {
 		if (current_coord.ypos == final_coord.ypos) {
 			yBeforeX = false;
@@ -270,9 +289,13 @@ void Robot::rotate() {
 	else being_rotated = false;
 }
 
+bool Robot::directions_are_the_same(){
+	return direction_matters ? current_coord.dir == final_coord.dir : true;
+}
+
 
 void Robot::move_forward() {
-	if (!rotated || translated || (direction_matters && current_coord.dir == final_coord.dir)) {
+	if (!rotated || translated) {
 		return;
 	}
 
@@ -281,7 +304,6 @@ void Robot::move_forward() {
 	{
 		rotated = false;
 		translated = true;
-		if (direction_matters) pause();
 		return;
 	}
 

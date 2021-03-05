@@ -18,7 +18,7 @@ enum DIR get_dir_from_char(const char & dir) {
 	EAST;
 }
 
-bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const String & mov, bool & direction_matters) {
+bool eval_new_pos(Position & coord, const int & len, int & curr_index, const String & mov, bool & direction_matters) {
 	int x = 0;
 	int y = 0;
 	bool yBeforeX = false;
@@ -63,13 +63,12 @@ bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const Strin
 			_time += curr_char;
 		}
 	}
-	boebot.copy_previous_states();
 
-	boebot.final_coord.xpos = x;
-	boebot.final_coord.ypos = y;
-	boebot.final_coord.total_time = _time.toInt();
+	coord.xpos = x;
+	coord.ypos = y;
+	coord.total_time = _time.toInt();
 	if (dirFound) {
-		boebot.final_coord.dir = get_dir_from_char(dir[0]);
+		coord.dir = get_dir_from_char(dir[0]);
 	}
 	direction_matters = dirFound;
 	return yBeforeX;

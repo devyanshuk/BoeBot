@@ -12,16 +12,16 @@ private:
 	Servo left;
 	Servo right;
 
-	bool rotated = false;
-	int rotation_count = 0;
-	bool x_adjusted = false;
-	int x_adjustment_count = 0;
-	bool y_adjusted = false;
-	int y_adjustment_count = 0;
-	bool translated = false;
-	int passed_coordinate_count = 0;
-	bool is_rotating_left = false;
-	bool is_rotating_right = false;
+	bool rotated;
+	int rotation_count;
+	bool x_adjusted;
+	int x_adjustment_count;
+	bool y_adjusted;
+	int y_adjustment_count;
+	bool translated;
+	int passed_coordinate_count;
+	bool is_rotating_left;
+	bool is_rotating_right;
 
 	void rotate_in_x_axis(bool is_greater);
 	void rotate_in_y_axis(bool is_greater);
@@ -32,23 +32,25 @@ private:
 
 public:
 
-	int leftWheel = 1500;
-	int rightWheel = 1500;
-
 	Sensor current_sensors_state;
 	Sensor previous_sensors_state;
 
 	Position current_coord;
 	Position final_coord;
-	bool being_rotated = false;
-	bool yBeforeX = false;
+	Position initial_coord;
+	bool yBeforeX;
 
-	bool stop_robot = false;
-	bool passed_coordinate = false;
-	bool direction_matters = false;
 
-	int button_press_count = -1;
-	bool button_being_pressed = true;
+	bool being_rotated ;
+
+	bool stop_robot;
+	bool passed_coordinate;
+	bool direction_matters;
+
+	int button_press_count;
+	bool button_being_pressed;
+
+	Robot();
 
 	void attach_servo();
 	void copy_sensor_states();
@@ -61,8 +63,10 @@ public:
 	void rightTurn();
 
 	void change_coordinates();
-	void copy_previous_states();
+	void reset_robot();
+	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
+	bool directions_are_the_same();
 	void rotate();
 	void move_forward();
 
