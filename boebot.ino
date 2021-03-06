@@ -10,6 +10,10 @@ Robot boebot;
 int len;
 int curr_index = 0;
 
+unsigned long tim = millis();
+
+int val = 1;
+
 unsigned long elapsed_time;
 unsigned long paused_time;
 
@@ -42,7 +46,7 @@ void reset_everything_else(){
 	curr_index = 0;
 	get_initial_coordinate();
 	paused_time = millis();
-	boebot.button_press_count = 1;
+	boebot.button_press_count = 0;
 	boebot.stop_robot = true;
 }
 
@@ -79,18 +83,24 @@ void loop(void)
 				if ((elapsed_time >= boebot.final_coord.total_time) && (curr_index < len) && boebot.directions_are_the_same()) {
 					if (boebot.button_press_count == 1){
 						boebot.copy_previous_coordinate();
-						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov, boebot.direction_matters);
 						boebot.reset_movements();
+						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov, boebot.direction_matters);
 					}
 					else {
 						if (boebot.final_coord == boebot.initial_coord){
-							boebot.reset_robot();
-							reset_everything_else();
+							boebot.direction_matters = true;
+							if (boebot.final_coord.dir == boebot.current_coord.dir){
+								boebot.reset_robot();
+								reset_everything_else();
+							}
 						}
-						else boebot.final_coord = boebot.initial_coord;
+						else {
+							boebot.final_coord = boebot.initial_coord;
+						}
 					}
 				}
 				else if ((curr_index < len) && (elapsed_time < boebot.final_coord.total_time)) {
+					//digitalWrite(led_pin, 1);
 					boebot.align_middle_sensors_when_waiting();
 				}
 				else if ( curr_index >= len ) {
@@ -99,12 +109,19 @@ void loop(void)
 			}
 			if (!boebot.stop_robot){
 				if (!boebot.being_rotated) boebot.change_coordinates();
-				boebot.rotate();
+				boebot.rotate(val);
 				boebot.move_forward();
 				boebot.copy_sensor_states();
+				if (millis() >= tim + 200){
+					val = (val + 1) % 2;
+					tim = millis();
+				}
 			}
 		}
-		else boebot.align_middle_sensors_when_waiting();
+		else {
+			//digitalWrite(led_pin, 1);
+			boebot.align_middle_sensors_when_waiting();
+		}
 		update_time();
 	}
 }

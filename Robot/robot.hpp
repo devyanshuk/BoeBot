@@ -27,7 +27,7 @@ private:
 	void rotate_in_y_axis(bool is_greater);
 	void move_(const int & a, const int & b);
 	void eval_new_wheel_values();
-	void rotate_to_a_certain_pos();
+	void rotate_to_a_certain_pos(int val);
 
 
 public:
@@ -67,7 +67,7 @@ public:
 	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
 	bool directions_are_the_same();
-	void rotate();
+	void rotate(int val);
 	void move_forward();
 
 };
