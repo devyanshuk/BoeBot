@@ -1,5 +1,4 @@
-#ifndef SENSORS
-#define SENSORS
+#pragma once
 
 class Sensor {
 
@@ -8,7 +7,7 @@ private:
 
 public:
 
-	Sensor & operator=(const bool _sensors[5]) {
+	Sensor & operator=(const bool (&_sensors)[5]) {
 		for ( int i = 0; i < 5; i++ ) {
 			this->_sensors[i] = _sensors[i];
 		}
@@ -16,17 +15,11 @@ public:
 	}
 
 	Sensor & operator=(const Sensor & other) {
-		for ( int i = 0; i < 5; i++ ) {
-			this->_sensors[i] = other._sensors[i];
-		}
+		*this = other._sensors;
 		return *this;
-		// *this = other._sensors;
-		// return *this;
 	}
 
 	bool operator[]( const int & index ) const {
 		return _sensors[index];
 	}
 };
-
-#endif

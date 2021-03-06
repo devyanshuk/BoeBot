@@ -1,6 +1,27 @@
 #pragma once
 
-#include "Robot.h"
+#include "Robot.hpp"
+
+Robot::Init()
+	{
+		being_rotated = false;
+		yBeforeX = false;
+		stop_robot = false;
+		passed_coordinate =false;
+		direction_matters = false;
+		button_press_count = 0;
+		button_being_pressed = false;
+		rotated = false;
+		rotation_count = 0;
+		x_adjusted = false;
+		x_adjustment_count = 0;
+		y_adjusted = false;
+		y_adjustment_count = 0;
+		translated = false;
+		passed_coordinate_count = 0;
+		is_rotating_left = false;
+		is_rotating_right = false;
+	}
 
 void Robot::rotate_in_x_axis(bool is_greater) {
 
@@ -27,8 +48,10 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		rotated = true;
 		translated = false;
 		x_adjusted = false;
+		is_rotating_left = false;
+		is_rotating_right = false;
 	}
-	else if (current_sensors_state[2] && !previous_sensors_state[2]) {
+	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
 		if (((is_greater && current_coord.dir == EAST) || (!is_greater && current_coord.dir == WEST)) && rotation_count == 2) {
 			x_adjusted = true;
@@ -65,8 +88,10 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		rotated = true;
 		translated = false;
 		y_adjusted = false;
+		is_rotating_left = false;
+		is_rotating_right = false;
 	}
-	else if (current_sensors_state[2] && !previous_sensors_state[2]) {
+	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
 		if (((is_greater && current_coord.dir == SOUTH) || (!is_greater && current_coord.dir == NORTH)) && rotation_count == 2) {
 			y_adjusted = true;
@@ -81,8 +106,6 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 void Robot::move_(const int & a, const int & b) {
 	left.writeMicroseconds(a);
 	right.writeMicroseconds(b);
-	leftWheel = a;
-	rightWheel = b;
 }
 
 void Robot::eval_new_wheel_values() {
@@ -127,16 +150,16 @@ void Robot::align_middle_sensors_when_waiting(){
 		pause();
 	}
 	else if (b && !c) {
-		move_(1570, 1570);
+		move_(1550, 1550);
 	}
 	else if (d && !c) {
-		move_(1430, 1430);
+		move_(1450, 1450);
 	}
 	else if (c && b && !d) {
-		move_(1530, 1530);
+		move_(1520, 1520);
 	}
 	else if (c && d && !b) {
-		move_(1470, 1470);
+		move_(1480, 1480);
 	}
 }
 
@@ -154,11 +177,6 @@ void Robot::reset_movements() {
 	translated = false;
 }
 
-void Robot::move_robot() {
-	left.writeMicroseconds(leftWheel);
-	right.writeMicroseconds(rightWheel);
-}
-
 
 void Robot::forward() {
 	move_(1700, 1300);
@@ -174,10 +192,12 @@ void Robot::pause() {
 
 void Robot::leftTurn() {
 	move_(1300, 1300);
+	is_rotating_left = true;
 }
 
 void Robot::rightTurn() {
 	move_(1700, 1700);
+	is_rotating_right = true;
 }
 
 
@@ -189,17 +209,17 @@ void Robot::change_coordinates() {
 
 		switch (current_coord.dir) {
 			case NORTH:
-				current_coord.ypos += 1;
-				break;
+			current_coord.ypos += 1;
+			break;
 			case SOUTH:
-				current_coord.ypos -= 1;
-				break;
+			current_coord.ypos -= 1;
+			break;
 			case EAST:
-				current_coord.xpos -= 1;
-				break;
+			current_coord.xpos -= 1;
+			break;
 			case WEST:
-				current_coord.xpos += 1;
-				break;
+			current_coord.xpos += 1;
+			break;
 		}
 	}
 
@@ -209,45 +229,43 @@ void Robot::change_coordinates() {
 	}
 }
 
-void Robot::copy_previous_states() {
+void Robot::copy_previous_coordinate() {
 	current_coord = final_coord;
 }
 
 void Robot::rotate_to_a_certain_pos(){
-	if (current_coord.dir == final_coord.dir){
-		pause();
-		return;
-	}
 
 	DIR final = final_coord.dir;
 
+	being_rotated = true;
+
 	switch (current_coord.dir){
 		case NORTH:
-			final == SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
-			break;
+		final == WEST ? rotate_in_x_axis(true) : EAST ? rotate_in_x_axis(false) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
+		break;
 		case SOUTH:
-			final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
-			break;
+		final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_y_axis(false);
+		break;
 		case EAST:
-			final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
-			break;
+		final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
+		break;
 		case WEST:
-			final == NORTH ? rotate_in_y_axis(false) : SOUTH ? rotate_in_y_axis(true) : rotate_in_x_axis(false);
-			break;
+		final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
+		break;
 	}
 }
 
 void Robot::rotate() {
-	if (rotated) {
+	if (rotated && (!direction_matters || (direction_matters && current_coord == final_coord && current_coord.dir == final_coord.dir ))) {
 		being_rotated = false;
 		return;
 	}
-	if (direction_matters){
+
+	if (direction_matters && (current_coord == final_coord)) {
 		rotate_to_a_certain_pos();
-		being_rotated = true;
-		return;
 	}
-	if (yBeforeX || current_coord.xpos == final_coord.xpos) {
+
+	else if (yBeforeX || current_coord.xpos == final_coord.xpos) {
 		if (current_coord.ypos == final_coord.ypos) {
 			yBeforeX = false;
 			being_rotated = false;
@@ -264,14 +282,23 @@ void Robot::rotate() {
 	else being_rotated = false;
 }
 
+bool Robot::directions_are_the_same(){
+	return direction_matters ? current_coord.dir == final_coord.dir : true;
+}
+
 
 void Robot::move_forward() {
-	if (!rotated || translated || direction_matters) {
+	if (!rotated || translated) {
+		return;
+	}
+
+	if (direction_matters && current_coord == final_coord){
 		return;
 	}
 
 	if ((current_coord.xpos == final_coord.xpos && (current_coord.dir == EAST || current_coord.dir == WEST)) ||
-		(current_coord.ypos == final_coord.ypos && (current_coord.dir == NORTH || current_coord.dir == SOUTH))) {
+	(current_coord.ypos == final_coord.ypos && (current_coord.dir == NORTH || current_coord.dir == SOUTH)))
+	{
 		rotated = false;
 		translated = true;
 		return;

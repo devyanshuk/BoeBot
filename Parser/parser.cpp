@@ -11,14 +11,14 @@ void trim_string(String & mov, int & len) {
 	mov = new_string;
 }
 
-enum DIR get_dir_from_char(const char & dir) {
-	return dir == 'n' ? NORTH :
-	dir == 's' ? SOUTH :
-	dir == 'w' ? WEST :
+enum DIR get_dir_from_char(const String & dir) {
+	return dir == "n" ? NORTH :
+	dir == "s" ? SOUTH :
+	dir == "w" ? WEST :
 	EAST;
 }
 
-bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const String & mov, bool & direction_matters) {
+bool eval_new_pos(Position & coord, const int & len, int & curr_index, const String & mov, bool & direction_matters) {
 	int x = 0;
 	int y = 0;
 	bool yBeforeX = false;
@@ -37,8 +37,8 @@ bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const Strin
 		if (curr_char == "n" || curr_char == "s" || (curr_char == "e" && x != 0 && y != 0) || curr_char == "w") {
 			dir = curr_char;
 			dirFound = true;
-			if ((curr_index + 1) < len) {
-				if (mov[curr_index + 1] != 't') break;
+			if (curr_index < len) {
+				if (mov[curr_index] != 't') break;
 				else continue;
 			}
 		}
@@ -63,13 +63,12 @@ bool eval_new_pos(Robot & boebot, const int & len, int & curr_index, const Strin
 			_time += curr_char;
 		}
 	}
-	boebot.copy_previous_states();
 
-	boebot.final_coord.xpos = x;
-	boebot.final_coord.ypos = y;
-	boebot.final_coord.total_time = _time.toInt();
+	coord.xpos = x;
+	coord.ypos = y;
+	coord.total_time = _time.toInt();
 	if (dirFound) {
-		boebot.final_coord.dir = get_dir_from_char(dir[0]);
+		coord.dir = get_dir_from_char(dir);
 	}
 	direction_matters = dirFound;
 	return yBeforeX;
