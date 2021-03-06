@@ -2,26 +2,26 @@
 
 #include "Robot.hpp"
 
-Robot::Robot() :
-being_rotated ( false ),
-yBeforeX ( false ),
-stop_robot ( false ),
-passed_coordinate (false ),
-direction_matters ( false ),
-button_press_count ( -1 ),
-button_being_pressed ( true ),
-rotated ( false ),
-rotation_count ( 0 ),
-x_adjusted ( false ),
-x_adjustment_count ( 0 ),
-y_adjusted ( false ),
-y_adjustment_count ( 0 ),
-translated ( false ),
-passed_coordinate_count ( 0 ),
-is_rotating_left ( false ),
-is_rotating_right ( false )
-{
-}
+Robot::Init()
+	{
+		being_rotated = false;
+		yBeforeX = false;
+		stop_robot = false;
+		passed_coordinate =false;
+		direction_matters = false;
+		button_press_count = 0;
+		button_being_pressed = false;
+		rotated = false;
+		rotation_count = 0;
+		x_adjusted = false;
+		x_adjustment_count = 0;
+		y_adjusted = false;
+		y_adjustment_count = 0;
+		translated = false;
+		passed_coordinate_count = 0;
+		is_rotating_left = false;
+		is_rotating_right = false;
+	}
 
 void Robot::rotate_in_x_axis(bool is_greater) {
 
@@ -177,10 +177,6 @@ void Robot::reset_movements() {
 	translated = false;
 }
 
-void Robot::reset_robot(){
-	Robot();
-}
-
 
 void Robot::forward() {
 	move_(1700, 1300);
@@ -237,9 +233,7 @@ void Robot::copy_previous_coordinate() {
 	current_coord = final_coord;
 }
 
-void Robot::rotate_to_a_certain_pos(int val){
-
-	//digitalWrite(11, val);
+void Robot::rotate_to_a_certain_pos(){
 
 	DIR final = final_coord.dir;
 
@@ -261,17 +255,14 @@ void Robot::rotate_to_a_certain_pos(int val){
 	}
 }
 
-void Robot::rotate(int val) {
+void Robot::rotate() {
 	if (rotated && (!direction_matters || (direction_matters && current_coord == final_coord && current_coord.dir == final_coord.dir ))) {
 		being_rotated = false;
-		if (direction_matters && (current_coord == final_coord) && current_coord.dir == final_coord.dir) {
-			digitalWrite(11, val);
-		}
 		return;
 	}
 
 	if (direction_matters && (current_coord == final_coord)) {
-		rotate_to_a_certain_pos(val);
+		rotate_to_a_certain_pos();
 	}
 
 	else if (yBeforeX || current_coord.xpos == final_coord.xpos) {
@@ -289,8 +280,6 @@ void Robot::rotate(int val) {
 		being_rotated = true;
 	}
 	else being_rotated = false;
-
-	//digitalWrite(11, val);
 }
 
 bool Robot::directions_are_the_same(){

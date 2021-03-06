@@ -6,19 +6,27 @@ class Position {
 
 public:
 
-	int xpos = 1;
-	int ypos = 1;
-	DIR dir = NORTH;
-	unsigned long total_time = 0;
+	int xpos;
+	int ypos;
+	DIR dir;
+	unsigned long total_time;
 
-	Position & operator=(Position other) {
+	Position():
+		xpos ( 1 ),
+		ypos ( 1 ),
+		dir ( NORTH ),
+		total_time ( 0 )
+		{
+		}
+
+	Position & operator=(const Position & other) {
 		xpos = other.xpos;
 		ypos = other.ypos;
 		total_time = other.total_time;
 		return *this;
 	}
 
-	bool operator==(Position other) {
+	bool operator==(const Position & other) {
 		return xpos == other.xpos && ypos == other.ypos;
 	}
 };

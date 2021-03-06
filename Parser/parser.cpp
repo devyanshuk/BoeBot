@@ -11,10 +11,10 @@ void trim_string(String & mov, int & len) {
 	mov = new_string;
 }
 
-enum DIR get_dir_from_char(const char & dir) {
-	return dir == 'n' ? NORTH :
-	dir == 's' ? SOUTH :
-	dir == 'w' ? WEST :
+enum DIR get_dir_from_char(const String & dir) {
+	return dir == "n" ? NORTH :
+	dir == "s" ? SOUTH :
+	dir == "w" ? WEST :
 	EAST;
 }
 
@@ -37,8 +37,8 @@ bool eval_new_pos(Position & coord, const int & len, int & curr_index, const Str
 		if (curr_char == "n" || curr_char == "s" || (curr_char == "e" && x != 0 && y != 0) || curr_char == "w") {
 			dir = curr_char;
 			dirFound = true;
-			if ((curr_index + 1) < len) {
-				if (mov[curr_index + 1] != 't') break;
+			if (curr_index < len) {
+				if (mov[curr_index] != 't') break;
 				else continue;
 			}
 		}
@@ -68,7 +68,7 @@ bool eval_new_pos(Position & coord, const int & len, int & curr_index, const Str
 	coord.ypos = y;
 	coord.total_time = _time.toInt();
 	if (dirFound) {
-		coord.dir = get_dir_from_char(dir[0]);
+		coord.dir = get_dir_from_char(dir);
 	}
 	direction_matters = dirFound;
 	return yBeforeX;

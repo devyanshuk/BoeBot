@@ -27,7 +27,7 @@ private:
 	void rotate_in_y_axis(bool is_greater);
 	void move_(const int & a, const int & b);
 	void eval_new_wheel_values();
-	void rotate_to_a_certain_pos(int val);
+	void rotate_to_a_certain_pos();
 
 
 public:
@@ -40,7 +40,6 @@ public:
 	Position initial_coord;
 	bool yBeforeX;
 
-
 	bool being_rotated ;
 
 	bool stop_robot;
@@ -50,7 +49,7 @@ public:
 	int button_press_count;
 	bool button_being_pressed;
 
-	Robot();
+	Init();
 
 	void attach_servo();
 	void copy_sensor_states();
@@ -63,11 +62,10 @@ public:
 	void rightTurn();
 
 	void change_coordinates();
-	void reset_robot();
 	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
 	bool directions_are_the_same();
-	void rotate(int val);
+	void rotate();
 	void move_forward();
 
 };
