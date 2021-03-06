@@ -3,7 +3,7 @@
 #include "Helpers/helpers.cpp"
 #include "Parser/parser.cpp"
 
-String mov = "b2e 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
+String mov = "b1w 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 Robot boebot;
 
@@ -20,7 +20,7 @@ bool button_was_pressed_twice = false;
 bool got_initial_coordinate = false;
 
 void get_initial_coordinate(){
-	boebot.yBeforeX = eval_new_pos(boebot.current_coord, len, curr_index, mov, boebot.direction_matters);
+	boebot.yBeforeX = eval_new_pos(boebot.current_coord, len, curr_index, mov);
 	boebot.final_coord = boebot.current_coord;
 	boebot.final_coord.dir = boebot.current_coord.dir;
 	if (!got_initial_coordinate){
@@ -89,10 +89,10 @@ void loop(void)
 					if (boebot.button_press_count == 1){
 						boebot.copy_previous_coordinate();
 						boebot.reset_movements();
-						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov, boebot.direction_matters);
+						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov);
 					}
 					else {
-						if (boebot.final_coord == boebot.initial_coord){
+						if (boebot.final_coord == boebot.current_coord){
 							boebot.direction_matters = true;
 							if (boebot.final_coord.dir == boebot.current_coord.dir){
 								boebot.Init();
@@ -115,10 +115,18 @@ void loop(void)
 			}
 			if (!boebot.stop_robot){
 				if (!boebot.being_rotated) boebot.change_coordinates();
-				boebot.rotate();
-				boebot.move_forward();
-				boebot.copy_sensor_states();
+				if (!boebot.direction_matters){
+					boebot.rotate();
+					boebot.move_forward();
+					boebot.copy_sensor_states();
+				}
+				else {
+					boebot.rotate_to_a_certain_dir();
+				}
 				update_time();
+			}
+			else {
+				boebot.pause();
 			}
 		}
 		else {
