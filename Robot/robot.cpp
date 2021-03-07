@@ -236,6 +236,7 @@ void Robot::copy_previous_coordinate() {
 
 void Robot::rotate_to_a_certain_dir(){
 
+	digitalWrite(11,1);
 	DIR final = final_coord.dir;
 	DIR current = current_coord.dir;
 
