@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Servo.h>
-#include "../Coordinates/coordinates.hpp"
+#include "coordinates.hpp"
 #include "../constants.h"
 #include "sensors.hpp"
 

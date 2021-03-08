@@ -2,8 +2,11 @@
 #define PARSER_H
 
 #include "Arduino.h"
-#include "../Coordinates/coordinates.hpp"
-#include "../Robot/robot.cpp"
+#include "coordinates.hpp"
+
+extern String mov;
+extern int len;
+extern int curr_index;
 
 bool eval_new_pos(Position & coord, const int & len, int & curr_index, const String & mov);
 
