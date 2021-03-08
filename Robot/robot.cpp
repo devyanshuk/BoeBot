@@ -253,16 +253,16 @@ void Robot::rotate_to_a_certain_dir(){
 
 	switch (current){
 		case NORTH:
-			final == WEST ? rightTurn() : EAST ? leftTurn() : leftTurn();
+			final == WEST ? rightTurn() : final == EAST ? leftTurn() : leftTurn();
 			break;
 		case SOUTH:
-			final == NORTH ? leftTurn() : EAST ? rightTurn() : leftTurn();
+			final == NORTH ? leftTurn() : final == EAST ? rightTurn() : leftTurn();
 			break;
 		case EAST:
-			final == NORTH ? rightTurn() : SOUTH ? leftTurn() : leftTurn();
+			final == NORTH ? rightTurn() : final == SOUTH ? leftTurn() : leftTurn();
 			break;
 		case WEST:
-			final == NORTH ? leftTurn() : SOUTH ? rightTurn() : leftTurn();
+			final == NORTH ? leftTurn() : final == SOUTH ? rightTurn() : leftTurn();
 			break;
 	}
 
