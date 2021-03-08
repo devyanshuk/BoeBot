@@ -223,11 +223,11 @@ void Robot::change_coordinates() {
 	}
 
 	else if (((current_sensors_state[0] && !previous_sensors_state[0]) ||
-	  (current_sensors_state[4] && !previous_sensors_state[4])))
-	  {
-		passed_coordinate = true;
-		passed_coordinate_count = 0;
-	  }
+		  (current_sensors_state[4] && !previous_sensors_state[4])))
+		  {
+			passed_coordinate = true;
+			passed_coordinate_count = 0;
+		  }
 }
 
 void Robot::copy_previous_coordinate() {
