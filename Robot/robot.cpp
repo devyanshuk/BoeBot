@@ -33,7 +33,8 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		return;
 	}
 	if (is_greater && (current_coord.dir == NORTH || current_coord.dir == EAST)) {
-		rightTurn();
+		if (current_coord.dir == EAST && current_coord.ypos == 5) leftTurn();
+		else rightTurn();
 	}
 	if (!is_greater && (current_coord.dir == NORTH || current_coord.dir == WEST)) {
 		if (current_coord.dir == WEST && current_coord.ypos == 5) rightTurn();
@@ -77,7 +78,8 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		else rightTurn();
 	}
 	if (!is_greater && (current_coord.dir == EAST || current_coord.dir == NORTH)) {
-		leftTurn();
+		if (current_coord.dir == NORTH && current_coord.xpos == 1) rightTurn();
+		else leftTurn();
 	}
 	else if (current_coord.dir == WEST) {
 		if (is_greater) leftTurn();
