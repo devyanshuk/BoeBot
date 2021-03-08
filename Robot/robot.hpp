@@ -27,8 +27,8 @@ private:
 
 	void rotate_in_x_axis(bool is_greater);
 	void rotate_in_y_axis(bool is_greater);
-	void move_(const int & a, const int & b);
-	void eval_new_wheel_values();
+	void move_(const int & left_wheel, const int & right_wheel);
+	void move_forward_and_align();
 	void check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_xy_2);
 	void reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted);
 

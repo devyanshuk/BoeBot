@@ -50,64 +50,64 @@ void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_x
 	is_rotating_right = false;
 }
 
-void Robot::rotate_in_x_axis(bool is_greater) {
+void Robot::rotate_in_x_axis(bool new_x_is_greater) {
 
-	if ((current_coord.dir == WEST && is_greater) || (current_coord.dir == EAST && !is_greater)) {
+	if ((current_coord.dir == WEST && new_x_is_greater) || (current_coord.dir == EAST && !new_x_is_greater)) {
 		rotated = true;
 		translated = false;
 		return;
 	}
-	if (is_greater && (current_coord.dir == NORTH || current_coord.dir == EAST)) {
+	if (new_x_is_greater && (current_coord.dir == NORTH || current_coord.dir == EAST)) {
 		if (current_coord.dir == EAST && current_coord.ypos == OFFSET_MAX) leftTurn();
 		else rightTurn();
 	}
-	if (!is_greater && (current_coord.dir == NORTH || current_coord.dir == WEST)) {
+	if (!new_x_is_greater && (current_coord.dir == NORTH || current_coord.dir == WEST)) {
 		if (current_coord.dir == WEST && current_coord.ypos == OFFSET_MAX) rightTurn();
 		else leftTurn();
 	}
 	else if (current_coord.dir == SOUTH) {
-		if (is_greater) leftTurn();
+		if (new_x_is_greater) leftTurn();
 		else rightTurn();
 	}
 	if (x_adjusted && x_adjustment_count++ > rotation_align) {
-		reset_rotation_helpers_and_update_dir(is_greater, WEST, EAST, x_adjustment_count, x_adjusted);
+		reset_rotation_helpers_and_update_dir(new_x_is_greater, WEST, EAST, x_adjustment_count, x_adjusted);
 	}
 	check_if_rotated(x_adjusted, EAST, WEST);
 }
 
 
-void Robot::rotate_in_y_axis(bool is_greater) {
+void Robot::rotate_in_y_axis(bool new_y_is_greater) {
 
-	if ((current_coord.dir == NORTH && is_greater) || (current_coord.dir == SOUTH && !is_greater)) {
+	if ((current_coord.dir == NORTH && new_y_is_greater) || (current_coord.dir == SOUTH && !new_y_is_greater)) {
 		rotated = true;
 		translated = false;
 		return;
 	}
-	if (is_greater && (current_coord.dir == EAST || current_coord.dir == SOUTH)) {
+	if (new_y_is_greater && (current_coord.dir == EAST || current_coord.dir == SOUTH)) {
 		if (current_coord.dir == SOUTH && current_coord.xpos == OFFSET_MIN) leftTurn();
 		else rightTurn();
 	}
-	if (!is_greater && (current_coord.dir == EAST || current_coord.dir == NORTH)) {
+	if (!new_y_is_greater && (current_coord.dir == EAST || current_coord.dir == NORTH)) {
 		if (current_coord.dir == NORTH && current_coord.xpos == OFFSET_MIN) rightTurn();
 		else leftTurn();
 	}
 	else if (current_coord.dir == WEST) {
-		if (is_greater) leftTurn();
+		if (new_y_is_greater) leftTurn();
 		else rightTurn();
 	}
 	if (y_adjusted && y_adjustment_count++ > rotation_align) {
-		reset_rotation_helpers_and_update_dir(is_greater, NORTH, SOUTH, y_adjustment_count, y_adjusted);
+		reset_rotation_helpers_and_update_dir(new_y_is_greater, NORTH, SOUTH, y_adjustment_count, y_adjusted);
 	}
 	check_if_rotated(y_adjusted, NORTH, SOUTH);
 }
 
 
-void Robot::move_(const int & a, const int & b) {
-	left.writeMicroseconds(a);
-	right.writeMicroseconds(b);
+void Robot::move_(const int & left_wheel, const int & right_wheel) {
+	left.writeMicroseconds(left_wheel);
+	right.writeMicroseconds(right_wheel);
 }
 
-void Robot::eval_new_wheel_values() {
+void Robot::move_forward_and_align() {
 	bool a = current_sensors_state[0];
 	bool b = current_sensors_state[1];
 	bool c = current_sensors_state[2];
@@ -236,32 +236,32 @@ void Robot::copy_previous_coordinate() {
 
 void Robot::rotate_to_a_certain_dir(){
 
-	DIR final = initial_coord.dir;
-	DIR current = current_coord.dir;
+	DIR final_dir = initial_coord.dir;
+	DIR current_dir = current_coord.dir;
 
-	if (current == final){
+	if (current_dir == final_dir){
 		return;
 	}
 
-	int time_to_rotate = (final == WEST && current == EAST) ||
-			     (final == EAST && current == WEST) ||
-			     (final == NORTH && current == SOUTH) ||
-			     (final == SOUTH && current == NORTH) ?
+	int time_to_rotate = (final_dir == WEST && current_dir == EAST) ||
+			     (final_dir == EAST && current_dir == WEST) ||
+			     (final_dir == NORTH && current_dir == SOUTH) ||
+			     (final_dir == SOUTH && current_dir == NORTH) ?
 			     2 * axis_rotation_count :
 			     axis_rotation_count;
 
-	switch (current){
+	switch (current_dir){
 		case NORTH:
-			final == WEST ? rightTurn() : leftTurn();
+			final_dir == WEST ? rightTurn() : leftTurn();
 			break;
 		case SOUTH:
-			final == EAST ? rightTurn() : leftTurn();
+			final_dir == EAST ? rightTurn() : leftTurn();
 			break;
 		case EAST:
-			final == NORTH ? rightTurn() : leftTurn();
+			final_dir == NORTH ? rightTurn() : leftTurn();
 			break;
 		case WEST:
-			final == SOUTH ? rightTurn() : leftTurn();
+			final_dir == SOUTH ? rightTurn() : leftTurn();
 			break;
 	}
 
@@ -311,5 +311,5 @@ void Robot::move_forward() {
 		return;
 	}
 
-	eval_new_wheel_values();
+	move_forward_and_align();
 }
