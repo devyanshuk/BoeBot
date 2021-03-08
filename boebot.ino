@@ -1,12 +1,10 @@
 #include "constants.h"
-#include "Robot/robot.cpp"
-#include "Helpers/helpers.cpp"
-#include "Parser/parser.cpp"
+#include "include/helpers.h"
+#include "include/parser.h"
+#include "include/robot.hpp"
+#include "include/coordinates.hpp"
 
 Robot boebot;
-
-int len;
-int curr_index = 0;
 
 unsigned long elapsed_time;
 unsigned long paused_time;

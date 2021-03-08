@@ -1,7 +1,4 @@
-#pragma once
-
-#include "Robot.hpp"
-#include "../Helpers/helpers.cpp"
+#include "../include/robot.hpp"
 
 void Robot::initialize_robot()
 	{
