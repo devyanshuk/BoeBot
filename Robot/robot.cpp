@@ -33,11 +33,11 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		return;
 	}
 	if (is_greater && (current_coord.dir == NORTH || current_coord.dir == EAST)) {
-		if (current_coord.dir == EAST && current_coord.ypos == 5) leftTurn();
+		if (current_coord.dir == EAST && current_coord.ypos == OFFSET_MAX) leftTurn();
 		else rightTurn();
 	}
 	if (!is_greater && (current_coord.dir == NORTH || current_coord.dir == WEST)) {
-		if (current_coord.dir == WEST && current_coord.ypos == 5) rightTurn();
+		if (current_coord.dir == WEST && current_coord.ypos == OFFSET_MAX) rightTurn();
 		else leftTurn();
 	}
 	else if (current_coord.dir == SOUTH) {
@@ -74,11 +74,11 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		return;
 	}
 	if (is_greater && (current_coord.dir == EAST || current_coord.dir == SOUTH)) {
-		if (current_coord.dir == SOUTH && current_coord.xpos == 1) leftTurn();
+		if (current_coord.dir == SOUTH && current_coord.xpos == OFFSET_MIN) leftTurn();
 		else rightTurn();
 	}
 	if (!is_greater && (current_coord.dir == EAST || current_coord.dir == NORTH)) {
-		if (current_coord.dir == NORTH && current_coord.xpos == 1) rightTurn();
+		if (current_coord.dir == NORTH && current_coord.xpos == OFFSET_MIN) rightTurn();
 		else leftTurn();
 	}
 	else if (current_coord.dir == WEST) {
@@ -255,16 +255,16 @@ void Robot::rotate_to_a_certain_dir(){
 
 	switch (current){
 		case NORTH:
-			final == WEST ? rightTurn() : final == EAST ? leftTurn() : leftTurn();
+			final == WEST ? rightTurn() : leftTurn();
 			break;
 		case SOUTH:
-			final == NORTH ? leftTurn() : final == EAST ? rightTurn() : leftTurn();
+			final == EAST ? rightTurn() : leftTurn();
 			break;
 		case EAST:
-			final == NORTH ? rightTurn() : final == SOUTH ? leftTurn() : leftTurn();
+			final == NORTH ? rightTurn() : leftTurn();
 			break;
 		case WEST:
-			final == NORTH ? leftTurn() : final == SOUTH ? rightTurn() : leftTurn();
+			final == SOUTH ? rightTurn() : leftTurn();
 			break;
 	}
 

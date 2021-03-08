@@ -26,6 +26,10 @@ constexpr int sensors[5] = { right_most_sensor_pin, right_pin, middle_sensor_pin
 constexpr int forward_align = 2930;
 constexpr int rotation_align = 2920;
 
+
 constexpr int axis_rotation_count = 5500;
 
+//grid
+constexpr int OFFSET_MIN = 1;
+constexpr int OFFSET_MAX = 5;
 #endif
