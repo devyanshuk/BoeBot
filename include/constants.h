@@ -1,5 +1,5 @@
-#ifndef robot_constants
-#define robot_constants
+#ifndef ROBOT_CONSTANTS
+#define ROBOT_CONSTANTS
 
 #include "Arduino.h"
 
