@@ -148,7 +148,7 @@ void Robot::align_middle_sensors_when_waiting(){
 	bool c = current_sensors_state[2];
 	bool d = current_sensors_state[3];
 
-	if (c && !d && !b){
+	if ((c && !d && !b) || (!c && !d && !b)){
 		pause();
 	}
 	else if (b && !c) {

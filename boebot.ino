@@ -3,7 +3,7 @@
 #include "Helpers/helpers.cpp"
 #include "Parser/parser.cpp"
 
-String mov = "b1n 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
+String mov = "a1e 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 Robot boebot;
 
@@ -73,6 +73,7 @@ void loop(void)
 	update_val();
 	check_for_button_press();
 	if (boebot.button_press_count == 0){
+		digitalWrite(led_pin, val);
 		boebot.align_middle_sensors_when_waiting();
 		paused_time = millis();
 	}
@@ -113,19 +114,19 @@ void loop(void)
 				}
 			}
 			if (!boebot.stop_robot){
-				if (!boebot.being_rotated) boebot.change_coordinates();
-				if ((boebot.button_press_count == 2) && (boebot.current_coord == boebot.initial_coord && boebot.current_coord.dir != boebot.initial_coord.dir)) {
+				if (boebot.direction_matters) {
 					boebot.rotate_to_a_certain_dir();
 				}
 				else {
+					if (!boebot.being_rotated) boebot.change_coordinates();
 					boebot.rotate();
 					boebot.move_forward();
-					boebot.copy_sensor_states();
 				}
+				boebot.copy_sensor_states();
 				update_time();
 			}
 			else {
-				boebot.pause();
+				boebot.align_middle_sensors_when_waiting();
 			}
 		}
 		else {
