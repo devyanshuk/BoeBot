@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Robot.hpp"
+#include "../Helpers/helpers.cpp"
 
 Robot::Init()
 	{
@@ -236,8 +237,7 @@ void Robot::copy_previous_coordinate() {
 
 void Robot::rotate_to_a_certain_dir(){
 
-	digitalWrite(11,1);
-	DIR final = final_coord.dir;
+	DIR final = initial_coord.dir;
 	DIR current = current_coord.dir;
 
 	if (current == final){
@@ -251,12 +251,12 @@ void Robot::rotate_to_a_certain_dir(){
 						 2 * axis_rotation_count :
 						 axis_rotation_count;
 
-	switch (current_coord.dir){
+	switch (current){
 		case NORTH:
 			final == WEST ? rightTurn() : EAST ? leftTurn() : leftTurn();
 			break;
 		case SOUTH:
-			final == NORTH ? rightTurn() : EAST ? rightTurn() : leftTurn();
+			final == NORTH ? leftTurn() : EAST ? rightTurn() : leftTurn();
 			break;
 		case EAST:
 			final == NORTH ? rightTurn() : SOUTH ? leftTurn() : leftTurn();
@@ -268,7 +268,7 @@ void Robot::rotate_to_a_certain_dir(){
 
 	if (rotation_when_dir_matters_count++ >= time_to_rotate){
 		rotation_when_dir_matters_count = 0;
-		current_coord.dir = final_coord.dir;
+		current_coord.dir = initial_coord.dir;
 	}
 }
 

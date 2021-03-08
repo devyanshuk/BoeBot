@@ -3,14 +3,12 @@
 #include "Helpers/helpers.cpp"
 #include "Parser/parser.cpp"
 
-String mov = "b1w 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
+String mov = "b1n 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 Robot boebot;
 
 int len;
 int curr_index = 0;
-
-unsigned long tim = millis();
 
 unsigned long elapsed_time;
 unsigned long paused_time;
@@ -72,6 +70,7 @@ void check_for_button_press(){
 
 void loop(void)
 {
+	update_val();
 	check_for_button_press();
 	if (boebot.button_press_count == 0){
 		boebot.align_middle_sensors_when_waiting();
@@ -115,13 +114,13 @@ void loop(void)
 			}
 			if (!boebot.stop_robot){
 				if (!boebot.being_rotated) boebot.change_coordinates();
-				if (boebot.button_press_count == 1 || (boebot.button_press_count == 2 && boebot.current_coord != boebot.final_coord)){
+				if ((boebot.button_press_count == 2) && (boebot.current_coord == boebot.initial_coord && boebot.current_coord.dir != boebot.initial_coord.dir)) {
+					boebot.rotate_to_a_certain_dir();
+				}
+				else {
 					boebot.rotate();
 					boebot.move_forward();
 					boebot.copy_sensor_states();
-				}
-				else {
-					boebot.rotate_to_a_certain_dir();
 				}
 				update_time();
 			}
