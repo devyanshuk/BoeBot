@@ -3,8 +3,6 @@
 #include "Helpers/helpers.cpp"
 #include "Parser/parser.cpp"
 
-String mov = "a1s 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
-//String mov = "e5e a5t000 b5t00 c3t0";
 Robot boebot;
 
 int len;
@@ -73,6 +71,7 @@ void loop(void)
 	update_val();
 	check_for_button_press();
 	if (boebot.button_press_count == 0){
+		digitalWrite(led_pin, val);
 		boebot.align_middle_sensors_when_waiting();
 		paused_time = millis();
 	}
@@ -114,7 +113,6 @@ void loop(void)
 			}
 			if (!boebot.stop_robot){
 				if (boebot.direction_matters) {
-					digitalWrite(11, val);
 					boebot.rotate_to_a_certain_dir();
 				}
 				else {
