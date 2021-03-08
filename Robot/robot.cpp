@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Robot.hpp"
+#include "../Helpers/helpers.cpp"
 
 Robot::Init()
 	{
@@ -21,6 +22,7 @@ Robot::Init()
 		passed_coordinate_count = 0;
 		is_rotating_left = false;
 		is_rotating_right = false;
+		rotation_when_dir_matters_count = false;
 	}
 
 void Robot::rotate_in_x_axis(bool is_greater) {
@@ -53,10 +55,10 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 	}
 	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
-		if (((is_greater && current_coord.dir == EAST) || (!is_greater && current_coord.dir == WEST)) && rotation_count == 2) {
+		if ((current_coord.dir == EAST || current_coord.dir == WEST) && rotation_count == 2) {
 			x_adjusted = true;
 		}
-		else if ((is_greater && current_coord.dir != EAST) || (!is_greater && current_coord.dir != WEST)) {
+		else if (current_coord.dir != EAST && current_coord.dir != WEST) {
 			x_adjusted = true;
 		}
 	}
@@ -93,10 +95,10 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 	}
 	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
 		rotation_count++;
-		if (((is_greater && current_coord.dir == SOUTH) || (!is_greater && current_coord.dir == NORTH)) && rotation_count == 2) {
+		if ((current_coord.dir == NORTH || current_coord.dir == SOUTH) && rotation_count == 2) {
 			y_adjusted = true;
 		}
-		else if ((is_greater && current_coord.dir != SOUTH) || (!is_greater && current_coord.dir != NORTH)) {
+		else if (current_coord.dir != NORTH && current_coord.dir != SOUTH) {
 			y_adjusted = true;
 		}
 	}
@@ -146,7 +148,7 @@ void Robot::align_middle_sensors_when_waiting(){
 	bool c = current_sensors_state[2];
 	bool d = current_sensors_state[3];
 
-	if (c && !d && !b){
+	if ((c && !d && !b) || (!c && !d && !b)){
 		pause();
 	}
 	else if (b && !c) {
@@ -233,36 +235,46 @@ void Robot::copy_previous_coordinate() {
 	current_coord = final_coord;
 }
 
-void Robot::rotate_to_a_certain_pos(){
+void Robot::rotate_to_a_certain_dir(){
 
-	DIR final = final_coord.dir;
+	DIR final = initial_coord.dir;
+	DIR current = current_coord.dir;
 
-	being_rotated = true;
+	if (current == final){
+		return;
+	}
 
-	switch (current_coord.dir){
+	int time_to_rotate = (final == WEST && current == EAST) ||
+						 (final == EAST && current == WEST) ||
+						 (final == NORTH && current == SOUTH) ||
+						 (final == SOUTH && current == NORTH) ?
+						 2 * axis_rotation_count :
+						 axis_rotation_count;
+
+	switch (current){
 		case NORTH:
-		final == WEST ? rotate_in_x_axis(true) : EAST ? rotate_in_x_axis(false) : SOUTH ? rotate_in_y_axis(false) : rotate_in_x_axis(true);
-		break;
+			final == WEST ? rightTurn() : EAST ? leftTurn() : leftTurn();
+			break;
 		case SOUTH:
-		final == NORTH ? rotate_in_y_axis(true) : EAST ? rotate_in_x_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_y_axis(false);
-		break;
+			final == NORTH ? leftTurn() : EAST ? rightTurn() : leftTurn();
+			break;
 		case EAST:
-		final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : WEST ? rotate_in_x_axis(true) : rotate_in_x_axis(false);
-		break;
+			final == NORTH ? rightTurn() : SOUTH ? leftTurn() : leftTurn();
+			break;
 		case WEST:
-		final == NORTH ? rotate_in_y_axis(true) : SOUTH ? rotate_in_y_axis(false) : EAST ? rotate_in_x_axis(false) : rotate_in_x_axis(true);
-		break;
+			final == NORTH ? leftTurn() : SOUTH ? rightTurn() : leftTurn();
+			break;
+	}
+
+	if (rotation_when_dir_matters_count++ >= time_to_rotate){
+		rotation_when_dir_matters_count = 0;
+		current_coord.dir = initial_coord.dir;
 	}
 }
 
 void Robot::rotate() {
-	if (rotated && (!direction_matters || (direction_matters && current_coord == final_coord && current_coord.dir == final_coord.dir ))) {
+	if (rotated) {
 		being_rotated = false;
-		return;
-	}
-
-	if (direction_matters && (current_coord == final_coord)) {
-		rotate_to_a_certain_pos();
 	}
 
 	else if (yBeforeX || current_coord.xpos == final_coord.xpos) {
@@ -289,10 +301,6 @@ bool Robot::directions_are_the_same(){
 
 void Robot::move_forward() {
 	if (!rotated || translated) {
-		return;
-	}
-
-	if (direction_matters && current_coord == final_coord){
 		return;
 	}
 

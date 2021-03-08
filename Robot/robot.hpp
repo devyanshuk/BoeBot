@@ -23,11 +23,12 @@ private:
 	bool is_rotating_left;
 	bool is_rotating_right;
 
+	int rotation_when_dir_matters_count;
+
 	void rotate_in_x_axis(bool is_greater);
 	void rotate_in_y_axis(bool is_greater);
 	void move_(const int & a, const int & b);
 	void eval_new_wheel_values();
-	void rotate_to_a_certain_pos();
 
 
 public:
@@ -64,6 +65,7 @@ public:
 	void change_coordinates();
 	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
+	void rotate_to_a_certain_dir();
 	bool directions_are_the_same();
 	void rotate();
 	void move_forward();

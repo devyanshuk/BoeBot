@@ -1,4 +1,9 @@
-#include "helpers.h"
+#pragma once
+
+#include "Arduino.h"
+
+unsigned long tim = millis();
+int val = 1;
 
 void display_sensors(const bool (&new_state)[5]){
 	for (size_t i = 0; i < 5; i++){
@@ -10,4 +15,11 @@ void display_sensors(const bool (&new_state)[5]){
 		}
 	}
 	Serial.println();
+}
+
+void update_val(){
+	if (millis() >= tim + 200){
+		val = (val + 1) % 2;
+		tim = millis();
+	}
 }

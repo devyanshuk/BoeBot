@@ -3,14 +3,12 @@
 #include "Helpers/helpers.cpp"
 #include "Parser/parser.cpp"
 
-String mov = "b2e 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
+String mov = "a1e 2bt0000 c3t0 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
 
 Robot boebot;
 
 int len;
 int curr_index = 0;
-
-unsigned long tim = millis();
 
 unsigned long elapsed_time;
 unsigned long paused_time;
@@ -20,7 +18,7 @@ bool button_was_pressed_twice = false;
 bool got_initial_coordinate = false;
 
 void get_initial_coordinate(){
-	boebot.yBeforeX = eval_new_pos(boebot.current_coord, len, curr_index, mov, boebot.direction_matters);
+	boebot.yBeforeX = eval_new_pos(boebot.current_coord, len, curr_index, mov);
 	boebot.final_coord = boebot.current_coord;
 	boebot.final_coord.dir = boebot.current_coord.dir;
 	if (!got_initial_coordinate){
@@ -72,8 +70,10 @@ void check_for_button_press(){
 
 void loop(void)
 {
+	update_val();
 	check_for_button_press();
 	if (boebot.button_press_count == 0){
+		digitalWrite(led_pin, val);
 		boebot.align_middle_sensors_when_waiting();
 		paused_time = millis();
 	}
@@ -85,16 +85,15 @@ void loop(void)
 		update_sensors();
 		if (!boebot.stop_robot) {
 			if (boebot.current_coord == boebot.final_coord) {
-				if ((elapsed_time >= boebot.final_coord.total_time) && (curr_index < len) && boebot.directions_are_the_same()) {
+				if ((elapsed_time >= boebot.final_coord.total_time) && (curr_index < len)) {
 					if (boebot.button_press_count == 1){
-						boebot.copy_previous_coordinate();
 						boebot.reset_movements();
-						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov, boebot.direction_matters);
+						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov);
 					}
 					else {
-						if (boebot.final_coord == boebot.initial_coord){
+						if (boebot.initial_coord == boebot.current_coord){
 							boebot.direction_matters = true;
-							if (boebot.final_coord.dir == boebot.current_coord.dir){
+							if (boebot.initial_coord.dir == boebot.current_coord.dir){
 								boebot.Init();
 								reset_everything_else();
 								button_was_pressed_twice = true;
@@ -103,6 +102,7 @@ void loop(void)
 						}
 						else {
 							boebot.final_coord = boebot.initial_coord;
+							boebot.direction_matters = false;
 						}
 					}
 				}
@@ -114,11 +114,19 @@ void loop(void)
 				}
 			}
 			if (!boebot.stop_robot){
-				if (!boebot.being_rotated) boebot.change_coordinates();
-				boebot.rotate();
-				boebot.move_forward();
+				if (boebot.direction_matters) {
+					boebot.rotate_to_a_certain_dir();
+				}
+				else {
+					if (!boebot.being_rotated) boebot.change_coordinates();
+					boebot.rotate();
+					boebot.move_forward();
+				}
 				boebot.copy_sensor_states();
 				update_time();
+			}
+			else {
+				boebot.align_middle_sensors_when_waiting();
 			}
 		}
 		else {

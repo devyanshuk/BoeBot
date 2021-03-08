@@ -11,14 +11,6 @@ public:
 	DIR dir;
 	unsigned long total_time;
 
-	Position():
-		xpos ( 1 ),
-		ypos ( 1 ),
-		dir ( NORTH ),
-		total_time ( 0 )
-		{
-		}
-
 	Position & operator=(const Position & other) {
 		xpos = other.xpos;
 		ypos = other.ypos;
@@ -28,5 +20,9 @@ public:
 
 	bool operator==(const Position & other) {
 		return xpos == other.xpos && ypos == other.ypos;
+	}
+
+	bool operator!=(const Position & other){
+		return !(*this == other);
 	}
 };
