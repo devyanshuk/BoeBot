@@ -2,7 +2,7 @@
 
 #include <Servo.h>
 #include "coordinates.hpp"
-#include "../constants.h"
+#include "constants.h"
 #include "sensors.hpp"
 
 class Robot {
