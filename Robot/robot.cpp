@@ -213,17 +213,17 @@ void Robot::change_coordinates() {
 
 		switch (current_coord.dir) {
 			case NORTH:
-			current_coord.ypos += 1;
-			break;
+				current_coord.ypos += 1;
+				break;
 			case SOUTH:
-			current_coord.ypos -= 1;
-			break;
+				current_coord.ypos -= 1;
+				break;
 			case EAST:
-			current_coord.xpos -= 1;
-			break;
+				current_coord.xpos -= 1;
+				break;
 			case WEST:
-			current_coord.xpos += 1;
-			break;
+				current_coord.xpos += 1;
+				break;
 		}
 	}
 
@@ -247,11 +247,11 @@ void Robot::rotate_to_a_certain_dir(){
 	}
 
 	int time_to_rotate = (final == WEST && current == EAST) ||
-						 (final == EAST && current == WEST) ||
-						 (final == NORTH && current == SOUTH) ||
-						 (final == SOUTH && current == NORTH) ?
-						 2 * axis_rotation_count :
-						 axis_rotation_count;
+					 (final == EAST && current == WEST) ||
+					 (final == NORTH && current == SOUTH) ||
+					 (final == SOUTH && current == NORTH) ?
+					 2 * axis_rotation_count :
+					 axis_rotation_count;
 
 	switch (current){
 		case NORTH:
