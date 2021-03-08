@@ -25,6 +25,31 @@ void Robot::initialize_robot()
 		rotation_when_dir_matters_count = false;
 	}
 
+void Robot::check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_xy_2)
+{
+	if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) ||
+	   (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0]))
+	   {
+			rotation_count++;
+			if (((current_coord.dir == dir_xy_1 || current_coord.dir == dir_xy_2) && rotation_count == 2) ||
+			     (current_coord.dir != dir_xy_1 && current_coord.dir != dir_xy_2))
+				 {
+					 coordinate_adjusted = true;
+				 }
+			}
+}
+
+void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted) {
+	rotation_count = 0;
+	axis_adjustment_count = 0;
+	current_coord.dir = is_greater ? greater_xy_dir : smaller_xy_dir;
+	rotated = true;
+	translated = false;
+	coordinate_adjusted = false;
+	is_rotating_left = false;
+	is_rotating_right = false;
+}
+
 void Robot::rotate_in_x_axis(bool is_greater) {
 
 	if ((current_coord.dir == WEST && is_greater) || (current_coord.dir == EAST && !is_greater)) {
@@ -45,24 +70,9 @@ void Robot::rotate_in_x_axis(bool is_greater) {
 		else rightTurn();
 	}
 	if (x_adjusted && x_adjustment_count++ > rotation_align) {
-		rotation_count = 0;
-		x_adjustment_count = 0;
-		current_coord.dir = is_greater ? WEST : EAST;
-		rotated = true;
-		translated = false;
-		x_adjusted = false;
-		is_rotating_left = false;
-		is_rotating_right = false;
+		reset_rotation_helpers_and_update_dir(is_greater, WEST, EAST, x_adjustment_count, x_adjusted);
 	}
-	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
-		rotation_count++;
-		if ((current_coord.dir == EAST || current_coord.dir == WEST) && rotation_count == 2) {
-			x_adjusted = true;
-		}
-		else if (current_coord.dir != EAST && current_coord.dir != WEST) {
-			x_adjusted = true;
-		}
-	}
+	check_if_rotated(x_adjusted, EAST, WEST);
 }
 
 
@@ -86,24 +96,9 @@ void Robot::rotate_in_y_axis(bool is_greater) {
 		else rightTurn();
 	}
 	if (y_adjusted && y_adjustment_count++ > rotation_align) {
-		rotation_count = 0;
-		y_adjustment_count = 0;
-		current_coord.dir = is_greater ? NORTH : SOUTH;
-		rotated = true;
-		translated = false;
-		y_adjusted = false;
-		is_rotating_left = false;
-		is_rotating_right = false;
+		reset_rotation_helpers_and_update_dir(is_greater, NORTH, SOUTH, y_adjustment_count, y_adjusted);
 	}
-	else if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) || (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0])) {
-		rotation_count++;
-		if ((current_coord.dir == NORTH || current_coord.dir == SOUTH) && rotation_count == 2) {
-			y_adjusted = true;
-		}
-		else if (current_coord.dir != NORTH && current_coord.dir != SOUTH) {
-			y_adjusted = true;
-		}
-	}
+	check_if_rotated(y_adjusted, NORTH, SOUTH);
 }
 
 
@@ -227,10 +222,12 @@ void Robot::change_coordinates() {
 		}
 	}
 
-	else if (((current_sensors_state[0] && !previous_sensors_state[0]) || (current_sensors_state[4] && !previous_sensors_state[4]))) {
-		passed_coordinate = true;
-		passed_coordinate_count = 0;
-	}
+	else if (((current_sensors_state[0] && !previous_sensors_state[0]) ||
+			  (current_sensors_state[4] && !previous_sensors_state[4])))
+			  {
+					passed_coordinate = true;
+					passed_coordinate_count = 0;
+			  }
 }
 
 void Robot::copy_previous_coordinate() {
