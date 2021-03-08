@@ -50,7 +50,7 @@ public:
 	int button_press_count;
 	bool button_being_pressed;
 
-	Init();
+	void initialize_robot();
 
 	void attach_servo();
 	void copy_sensor_states();

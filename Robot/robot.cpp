@@ -3,7 +3,7 @@
 #include "Robot.hpp"
 #include "../Helpers/helpers.cpp"
 
-Robot::Init()
+void Robot::initialize_robot()
 	{
 		being_rotated = false;
 		yBeforeX = false;

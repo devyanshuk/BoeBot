@@ -30,7 +30,7 @@ void get_initial_coordinate(){
 
 void setup()
 {
-	boebot.Init();
+	boebot.initialize_robot();
 	Serial.begin(9600);
 	boebot.attach_servo();
 	pinMode(button_pin, INPUT_PULLUP);
@@ -94,7 +94,7 @@ void loop(void)
 						if (boebot.initial_coord == boebot.current_coord){
 							boebot.direction_matters = true;
 							if (boebot.initial_coord.dir == boebot.current_coord.dir){
-								boebot.Init();
+								boebot.initialize_robot();
 								reset_everything_else();
 								button_was_pressed_twice = true;
 								boebot.stop_robot = true;
