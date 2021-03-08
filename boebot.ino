@@ -125,9 +125,6 @@ void loop(void)
 				boebot.copy_sensor_states();
 				update_time();
 			}
-			else {
-				boebot.align_middle_sensors_when_waiting();
-			}
 		}
 		else {
 			boebot.align_middle_sensors_when_waiting();
