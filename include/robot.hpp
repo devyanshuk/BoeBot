@@ -32,6 +32,10 @@ private:
 	void check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_xy_2);
 	void reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted);
 
+	void rotate();
+	void move_forward();
+	void change_coordinates();
+
 
 public:
 
@@ -58,18 +62,22 @@ public:
 	void copy_sensor_states();
 	void reset_movements();
 
+	void check_for_button_press();
+
 	void forward();
 	void backward();
 	void pause();
 	void leftTurn();
 	void rightTurn();
 
-	void change_coordinates();
+	void move_to_final_coordinate();
+
 	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
+	bool current_and_final_coordinates_are_the_same();
+	bool robot_rotated_to_the_initial_direction();
+	bool robot_reached_the_initial_position();
 	void rotate_to_a_certain_dir();
 	bool directions_are_the_same();
-	void rotate();
-	void move_forward();
 
 };

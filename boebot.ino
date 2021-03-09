@@ -8,13 +8,14 @@ Robot boebot;
 unsigned long elapsed_time;
 unsigned long paused_time;
 
-bool button_was_pressed_twice = false;
+bool robot_has_been_reset = false;
 bool button_pressed_twice_at_end_point = false;
+bool serial_input_given = false;
 
 bool got_initial_coordinate = false;
 
 void get_initial_coordinate(){
-	boebot.yBeforeX = eval_new_pos(boebot.current_coord, len, curr_index, mov);
+	boebot.yBeforeX = eval_new_pos(boebot.current_coord);
 	boebot.final_coord = boebot.current_coord;
 	boebot.final_coord.dir = boebot.current_coord.dir;
 	if (!got_initial_coordinate){
@@ -24,14 +25,24 @@ void get_initial_coordinate(){
 	}
 }
 
+void check_for_serial_input_and_update_movement(){
+	if (Serial.available()){
+		mov = Serial.readString();
+		trim_string();
+		got_initial_coordinate = false;
+		reset_boebot();
+		serial_input_given = true;
+	}
+}
+
 void setup()
 {
 	boebot.initialize_robot();
-	Serial.begin(9600);
+	Serial.begin(115200);
 	boebot.attach_servo();
 	pinMode(button_pin, INPUT_PULLUP);
 	pinMode(led_pin, OUTPUT);
-	trim_string(mov, len);
+	trim_string();
 	get_initial_coordinate();
 }
 
@@ -39,7 +50,14 @@ void update_time() {
 	elapsed_time = (millis() - paused_time) / 100;
 }
 
-void reset_everything_else(){
+bool time_still_remaining() {
+	return (elapsed_time < boebot.final_coord.total_time);
+}
+
+void reset_boebot(){
+	boebot.initialize_robot();
+	robot_has_been_reset = true;
+	boebot.stop_robot = true;
 	curr_index = 0;
 	get_initial_coordinate();
 	paused_time = millis();
@@ -54,32 +72,27 @@ void update_sensors() {
 	boebot.current_sensors_state = new_state;
 }
 
-void check_for_button_press(){
-	bool pressed = digitalRead(button_pin) == 0;
-	if (pressed && !boebot.button_being_pressed){
-		boebot.button_being_pressed = true;
-	}
-	else if (!pressed && boebot.button_being_pressed){
-		boebot.button_being_pressed = false;
-		boebot.button_press_count++;
-	}
-}
-
 void loop(void)
 {
 	update_val();
-	check_for_button_press();
-	if (boebot.button_press_count == 0){
-		digitalWrite(led_pin, val);
+
+	boebot.check_for_button_press();
+	if (boebot.button_press_count == 0) {
+		check_for_serial_input_and_update_movement();
+		if (!serial_input_given) digitalWrite(led_pin, val);
+		else {
+			analogWrite(led_pin, analog_val);
+			update_analog_val();
+		}
 		boebot.align_middle_sensors_when_waiting();
 		paused_time = millis();
 	}
 	else {
-		if (button_was_pressed_twice){
-			button_was_pressed_twice = false;
+		if (robot_has_been_reset) {
+			robot_has_been_reset = false;
 			boebot.stop_robot = false;
 		}
-		else if (!button_pressed_twice_at_end_point && boebot.button_press_count == 2 && curr_index >= len && boebot.current_coord == boebot.final_coord){
+		else if (!button_pressed_twice_at_end_point && boebot.button_press_count == 2 && !more_coordinates_left() && boebot.current_and_final_coordinates_are_the_same()){
 			button_pressed_twice_at_end_point = true;
 			boebot.final_coord = boebot.initial_coord;
 			curr_index = 0;
@@ -87,20 +100,18 @@ void loop(void)
 		}
 		update_sensors();
 		if (!boebot.stop_robot) {
-			if (boebot.current_coord == boebot.final_coord) {
-				if ((elapsed_time >= boebot.final_coord.total_time) && (curr_index < len)) {
+			if (boebot.current_and_final_coordinates_are_the_same()) {
+
+				if (!time_still_remaining() && more_coordinates_left()) {
 					if (boebot.button_press_count == 1){
 						boebot.reset_movements();
-						boebot.yBeforeX = eval_new_pos(boebot.final_coord, len, curr_index, mov);
+						boebot.yBeforeX = eval_new_pos(boebot.final_coord);
 					}
 					else {
-						if (boebot.initial_coord == boebot.current_coord){
+						if (boebot.robot_reached_the_initial_position()) {
 							boebot.direction_matters = true;
-							if (boebot.initial_coord.dir == boebot.current_coord.dir){
-								boebot.initialize_robot();
-								reset_everything_else();
-								button_was_pressed_twice = true;
-								boebot.stop_robot = true;
+							if (boebot.robot_rotated_to_the_initial_direction()) {
+								reset_boebot();
 							}
 						}
 						else {
@@ -109,29 +120,22 @@ void loop(void)
 						}
 					}
 				}
-				else if ((curr_index < len) && (elapsed_time < boebot.final_coord.total_time)) {
+				else if (more_coordinates_left() && time_still_remaining()) {
 					boebot.align_middle_sensors_when_waiting();
 				}
-				else if ( curr_index >= len ) {
+				else if (!more_coordinates_left()) {
 					boebot.stop_robot = true;
 				}
 			}
+
 			if (!boebot.stop_robot){
-				if (boebot.direction_matters) {
-					boebot.rotate_to_a_certain_dir();
-				}
-				else {
-					if (!boebot.being_rotated) boebot.change_coordinates();
-					boebot.rotate();
-					boebot.move_forward();
-				}
+				if (boebot.direction_matters) boebot.rotate_to_a_certain_dir();
+				else boebot.move_to_final_coordinate();
 				boebot.copy_sensor_states();
 				update_time();
 			}
 			else boebot.pause();
 		}
-		else {
-			boebot.align_middle_sensors_when_waiting();
-		}
+		else boebot.align_middle_sensors_when_waiting();
 	}
 }
