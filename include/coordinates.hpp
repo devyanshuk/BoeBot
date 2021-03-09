@@ -1,6 +1,6 @@
 #pragma once
 
-enum DIR { NORTH = 1, SOUTH = 2, EAST = 3, WEST = 4 };
+enum DIR { NORTH, SOUTH, EAST, WEST };
 
 class Position {
 
