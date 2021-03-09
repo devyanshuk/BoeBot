@@ -66,11 +66,11 @@ public:
 
 	void attach_servo();
 	void copy_sensor_states();
-	void reset_previous_movements();
 	void reset_initial_coordinate();
 	void copy_previous_coordinate();
 
 	void check_for_button_press();
+	bool button_has_not_been_pressed_yet();
 	bool button_has_been_pressed_only_once();
 	void check_if_button_has_been_pressed_after_end_of_movement();
 
@@ -87,9 +87,9 @@ public:
 	bool current_and_final_coordinates_are_the_same();
 	void set_initial_coordinate_and_get_current_coordinate();
 
-	void move_to_final_coordinate();
 	void rotate_to_a_certain_dir();
 	bool directions_are_the_same();
+	void move_to_final_coordinate();
 	void align_middle_sensors_when_waiting();
 
 };

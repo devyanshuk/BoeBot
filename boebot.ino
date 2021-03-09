@@ -72,7 +72,7 @@ void update_sensors() {
 void loop(void)
 {
 	boebot.check_for_button_press();
-	if (boebot.button_press_count == 0) {
+	if (boebot.button_has_not_been_pressed_yet()) {
 		check_for_serial_input_and_update_movement();
 		display_led_at_start_position(serial_input_given);
 		boebot.align_middle_sensors_when_waiting();
@@ -92,7 +92,6 @@ void loop(void)
 			if (boebot.current_and_final_coordinates_are_the_same()) {
 				if (!time_still_remaining() && more_coordinates_left()) {
 					if (boebot.button_has_been_pressed_only_once()){
-						boebot.reset_previous_movements();
 						boebot.get_next_position_to_go_to();
 					}
 					else {

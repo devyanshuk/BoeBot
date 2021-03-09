@@ -220,11 +220,6 @@ void Robot::copy_sensor_states() {
 	previous_sensors_state = current_sensors_state;
 }
 
-void Robot::reset_previous_movements() {
-	rotated = false;
-	translated = false;
-}
-
 void Robot::reset_initial_coordinate() {
 	got_initial_coordinate = false;
 }
@@ -249,6 +244,10 @@ void Robot::check_for_button_press() {
 
 bool Robot::button_has_been_pressed_only_once() {
 	return button_press_count == 1;
+}
+
+bool Robot::button_has_not_been_pressed_yet() {
+	return button_press_count == 0;
 }
 
 void Robot::check_if_button_has_been_pressed_after_end_of_movement() {
@@ -293,6 +292,8 @@ void Robot::rightTurn() {
 /* coordinates */
 
 void Robot::get_next_position_to_go_to() {
+	rotated = false;
+	translated = false;
 	yBeforeX = eval_new_pos(final_coord);
 }
 
