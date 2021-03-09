@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "constants.h"
 
-extern int val;
+extern int digital_val;
 extern int analog_val;
 
 void update_val();
