@@ -127,7 +127,6 @@ void Robot::move_forward_and_align() {
 	}
 	else if (passed_coordinate) {
 		pause();
-		return;
 	}
 	else if (c && d && !b) {
 		move_(1470, 1470);
