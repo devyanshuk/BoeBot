@@ -4,6 +4,7 @@
 #include "coordinates.hpp"
 #include "constants.h"
 #include "sensors.hpp"
+#include "parser.h"
 
 class Robot {
 
@@ -22,6 +23,8 @@ private:
 	int passed_coordinate_count;
 	bool is_rotating_left;
 	bool is_rotating_right;
+	bool got_initial_coordinate;
+	bool button_pressed_twice_at_end_point;
 
 	int rotation_when_dir_matters_count;
 
@@ -60,7 +63,7 @@ public:
 
 	void attach_servo();
 	void copy_sensor_states();
-	void reset_movements();
+	void reset_previous_movements();
 
 	void check_for_button_press();
 
@@ -71,10 +74,16 @@ public:
 	void rightTurn();
 
 	void move_to_final_coordinate();
+	void reset_initial_coordinate();
 
 	void copy_previous_coordinate();
 	void align_middle_sensors_when_waiting();
 	bool current_and_final_coordinates_are_the_same();
+	void set_initial_coordinate_and_get_current_coordinate();
+	void check_if_button_has_been_pressed_after_end_of_movement();
+	void get_next_position_to_go_to();
+	void set_final_coord_to_initial_coord();
+	bool button_has_been_pressed_only_once();
 	bool robot_rotated_to_the_initial_direction();
 	bool robot_reached_the_initial_position();
 	void rotate_to_a_certain_dir();
