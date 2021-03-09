@@ -7,6 +7,7 @@
 
 extern int len;
 extern String mov;
+extern String new_mov;
 extern int curr_index;
 
 void trim_string();

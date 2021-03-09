@@ -13,11 +13,23 @@ bool serial_input_given = false;
 
 void check_for_serial_input_and_update_movement(){
 	if (Serial.available()){
-		mov = Serial.readString();
+		String new_input = Serial.readString();
+		new_mov += new_input;
+		Serial.println(new_input);
+		serial_input_given = true;
+	}
+}
+
+void initialize_if_serial_input_was_given() {
+	if (serial_input_given) {
+		serial_input_given = false;
+		mov = new_mov;
 		trim_string();
 		boebot.reset_initial_coordinate();
 		reset_boebot();
-		serial_input_given = true;
+		boebot.stop_robot = false;
+		boebot.button_press_count = 1;
+		Serial.println(new_mov);
 	}
 }
 
@@ -66,6 +78,7 @@ void loop(void)
 		paused_time = millis();
 	}
 	else {
+		initialize_if_serial_input_was_given();
 		if (robot_has_been_reset) {
 			robot_has_been_reset = false;
 			boebot.stop_robot = false;
