@@ -120,9 +120,10 @@ void Robot::move_forward_and_align() {
 
 	if ((passed_coordinate && (extra_forward_movement_count < forward_align)) ||
 	    (!passed_coordinate && c && ((!d && !b) || (!a && !b && !d && !e))) ||
-	    (!passed_coordinate && c && ((d && b) || (e && d) || (a && b) || (a && b && d && e))))
+	    (!passed_coordinate && c && ((d && b) || (e && d) || (a && b) || (a && b && d && e))) ||
+	    (!a && !b && !c && !d && !e && !passed_coordinate))
 	{
-		move_(1700, 1300);
+		forward();
 	}
 	else if (passed_coordinate) {
 		pause();
@@ -139,9 +140,6 @@ void Robot::move_forward_and_align() {
 	}
 	else if (b && !c) {
 		move_(1560, 1560);
-	}
-	else if (!a && !b && !c && !d && !e && !passed_coordinate) {
-		move_(1700, 1300);
 	}
 }
 
