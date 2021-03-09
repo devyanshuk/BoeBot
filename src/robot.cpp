@@ -20,6 +20,8 @@ void Robot::initialize_robot()
 		is_rotating_left = false;
 		is_rotating_right = false;
 		rotation_when_dir_matters_count = false;
+		got_initial_coordinate = false;
+		button_pressed_twice_at_end_point = false;
 	}
 
 void Robot::check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_xy_2)
@@ -40,12 +42,25 @@ bool Robot::current_and_final_coordinates_are_the_same() {
 	return current_coord == final_coord;
 }
 
+void Robot::set_final_coord_to_initial_coord() {
+	final_coord = initial_coord;
+	direction_matters = false;
+}
+
 bool Robot::robot_reached_the_initial_position() {
 	return initial_coord == current_coord;
 }
 
 bool Robot::robot_rotated_to_the_initial_direction() {
 	return initial_coord.dir == current_coord.dir;
+}
+
+void Robot::get_next_position_to_go_to() {
+	yBeforeX = eval_new_pos(final_coord);
+}
+
+void Robot::reset_initial_coordinate() {
+	got_initial_coordinate = false;
 }
 
 
@@ -60,6 +75,10 @@ void Robot::check_for_button_press() {
 	}
 }
 
+bool Robot::button_has_been_pressed_only_once() {
+	return button_press_count == 1;
+}
+
 void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted) {
 	rotation_count = 0;
 	axis_adjustment_count = 0;
@@ -69,6 +88,31 @@ void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_x
 	coordinate_adjusted = false;
 	is_rotating_left = false;
 	is_rotating_right = false;
+}
+
+void Robot::check_if_button_has_been_pressed_after_end_of_movement() {
+	if (!button_pressed_twice_at_end_point &&
+		button_press_count == 2 &&
+		!more_coordinates_left() &&
+		current_and_final_coordinates_are_the_same())
+		{
+			button_pressed_twice_at_end_point = true;
+			final_coord = initial_coord;
+			curr_index = 0;
+			stop_robot = false;
+		}
+}
+
+void Robot::set_initial_coordinate_and_get_current_coordinate() {
+	curr_index = 0;
+	yBeforeX = eval_new_pos(current_coord);
+	final_coord = current_coord;
+	final_coord.dir = current_coord.dir;
+	if (!got_initial_coordinate){
+		got_initial_coordinate = true;
+		initial_coord = current_coord;
+		initial_coord.dir = current_coord.dir;
+	}
 }
 
 void Robot::rotate_in_x_axis(bool new_x_is_greater) {
@@ -192,7 +236,7 @@ void Robot::copy_sensor_states() {
 	previous_sensors_state = current_sensors_state;
 }
 
-void Robot::reset_movements() {
+void Robot::reset_previous_movements() {
 	rotated = false;
 	translated = false;
 }

@@ -34,3 +34,13 @@ void update_analog_val() {
 		tim_2 = millis();
 	}
 }
+
+void display_led_at_start_position(const bool & serial_input_given) {
+	if (!serial_input_given) {
+		digitalWrite(led_pin, val);
+	}
+	else {
+		analogWrite(led_pin, analog_val);
+		update_analog_val();
+	}
+}
