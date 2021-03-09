@@ -22,4 +22,5 @@ public:
 	bool operator[]( const int & index ) const {
 		return _sensors[index];
 	}
+	
 };

@@ -58,8 +58,6 @@ void update_sensors() {
 
 void loop(void)
 {
-	update_val();
-
 	boebot.check_for_button_press();
 	if (boebot.button_press_count == 0) {
 		check_for_serial_input_and_update_movement();

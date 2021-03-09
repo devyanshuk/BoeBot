@@ -25,4 +25,5 @@ public:
 	bool operator!=(const Position & other) const {
 		return !(*this == other);
 	}
+
 };
