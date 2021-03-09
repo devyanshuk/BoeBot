@@ -71,11 +71,11 @@ bool eval_new_pos(Position & coord) {
 				char a1 = mov[curr_index];
 				char a2 = mov[curr_index + 1];
 				if ((isDigit(a1) && a1 >= offset_min[0] && a1 <= offset_max[0] && isAlpha(a2)) ||
-					(isAlpha(a1) && isDigit(a2) && a2 >= offset_min[0] && a2 <= offset_max[0]))
-					{
-						_time += curr_char;
-						break;
-					}
+				(isAlpha(a1) && isDigit(a2) && a2 >= offset_min[0] && a2 <= offset_max[0]))
+				{
+					_time += curr_char;
+					break;
+				}
 			}
 			_time += curr_char;
 		}
