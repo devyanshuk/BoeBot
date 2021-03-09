@@ -32,4 +32,5 @@ constexpr int axis_rotation_count = 5500;
 //grid
 constexpr int OFFSET_MIN = 1;
 constexpr int OFFSET_MAX = 5;
+
 #endif

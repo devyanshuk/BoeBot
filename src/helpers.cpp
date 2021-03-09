@@ -9,8 +9,8 @@ int analog_val = 0;
 bool increase_analog_val = true;
 
 void display_sensors(const bool (&new_state)[5]) {
-	for (size_t i = 0; i < 5; i++){
-		if (new_state[i] == true){
+	for (size_t i = 0; i < 5; i++) {
+		if (new_state[i] == true) {
 			Serial.print("V");
 		}
 		else {

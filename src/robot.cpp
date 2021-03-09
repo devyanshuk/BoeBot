@@ -238,10 +238,10 @@ void Robot::copy_previous_coordinate() {
 
 void Robot::check_for_button_press() {
 	bool pressed = digitalRead(button_pin) == 0;
-	if (pressed && !button_being_pressed){
+	if (pressed && !button_being_pressed) {
 		button_being_pressed = true;
 	}
-	else if (!pressed && button_being_pressed){
+	else if (!pressed && button_being_pressed) {
 		button_being_pressed = false;
 		button_press_count++;
 	}
