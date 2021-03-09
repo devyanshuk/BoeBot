@@ -10,6 +10,7 @@ unsigned long paused_time;
 
 bool robot_has_been_reset = false;
 bool serial_input_given = false;
+bool initialized_with_serial_input = false;
 
 void check_for_serial_input_and_update_movement(){
 	if (Serial.available()){
@@ -21,8 +22,8 @@ void check_for_serial_input_and_update_movement(){
 }
 
 void initialize_if_serial_input_was_given() {
-	if (serial_input_given) {
-		serial_input_given = false;
+	if (serial_input_given && !initialized_with_serial_input) {
+		initialized_with_serial_input = true;
 		mov = new_mov;
 		trim_string();
 		boebot.reset_initial_coordinate();
