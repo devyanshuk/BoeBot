@@ -2,7 +2,6 @@
 #include "include/helpers.h"
 #include "include/parser.h"
 #include "include/robot.hpp"
-#include "include/coordinates.hpp"
 
 Robot boebot;
 
