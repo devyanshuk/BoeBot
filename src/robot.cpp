@@ -85,14 +85,14 @@ void Robot::check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_x
 {
 	if ((is_rotating_left && current_sensors_state[4] && !previous_sensors_state[4]) ||
 	   (is_rotating_right && current_sensors_state[0] && !previous_sensors_state[0]))
-	   {
+	{
 		rotation_count++;
 		if (((current_coord.dir == dir_xy_1 || current_coord.dir == dir_xy_2) && rotation_count == 2) ||
 		     (current_coord.dir != dir_xy_1 && current_coord.dir != dir_xy_2))
-			 {
-				 coordinate_adjusted = true;
-			 }
+		{
+			 coordinate_adjusted = true;
 		}
+	}
 }
 
 void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted) {
@@ -119,8 +119,9 @@ void Robot::move_forward_and_align() {
 	bool e = current_sensors_state[4];
 
 	if ((passed_coordinate && (extra_forward_movement_count < forward_align)) ||
-	(!passed_coordinate && c && ((!d && !b) || (!a && !b && !d && !e))) ||
-	(!passed_coordinate && c && ((d && b) || (e && d) || (a && b) || (a && b && d && e)))) {
+	    (!passed_coordinate && c && ((!d && !b) || (!a && !b && !d && !e))) ||
+	    (!passed_coordinate && c && ((d && b) || (e && d) || (a && b) || (a && b && d && e))))
+	{
 		move_(1700, 1300);
 	}
 	else if (passed_coordinate) {
