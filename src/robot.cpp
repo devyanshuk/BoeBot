@@ -36,6 +36,30 @@ void Robot::check_if_rotated(bool & coordinate_adjusted, DIR dir_xy_1, DIR dir_x
 		}
 }
 
+bool Robot::current_and_final_coordinates_are_the_same() {
+	return current_coord == final_coord;
+}
+
+bool Robot::robot_reached_the_initial_position() {
+	return initial_coord == current_coord;
+}
+
+bool Robot::robot_rotated_to_the_initial_direction() {
+	return initial_coord.dir == current_coord.dir;
+}
+
+
+void Robot::check_for_button_press() {
+	bool pressed = digitalRead(button_pin) == 0;
+	if (pressed && !button_being_pressed){
+		button_being_pressed = true;
+	}
+	else if (!pressed && button_being_pressed){
+		button_being_pressed = false;
+		button_press_count++;
+	}
+}
+
 void Robot::reset_rotation_helpers_and_update_dir(bool is_greater, DIR greater_xy_dir, DIR smaller_xy_dir, int & axis_adjustment_count, bool & coordinate_adjusted) {
 	rotation_count = 0;
 	axis_adjustment_count = 0;
@@ -266,6 +290,12 @@ void Robot::rotate_to_a_certain_dir() {
 		rotation_when_dir_matters_count = 0;
 		current_coord.dir = initial_coord.dir;
 	}
+}
+
+void Robot::move_to_final_coordinate() {
+	if (!being_rotated) change_coordinates();
+	rotate();
+	move_forward();
 }
 
 void Robot::rotate() {

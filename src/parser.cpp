@@ -2,15 +2,15 @@
 #include "../include/coordinates.hpp"
 #include "../include/constants.h"
 
-String mov = "a1s 2bt100 c3t150 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 \
+String mov = "a1e 2bt100 c3t150 d4t0 e5t0 d5t0 d4t0 c3t0 b2t0 a1t0 e1t0 \
 2dt0 3ct0 4bt0 5at0 a3t0 e3t0 e2t0 a2t0 a4t0 e4t0 a1t0 b1t0 b2t0 a2t0 a3t0 \
 b3t0 b4t0 a4t0 a5t0 b5t0 b4t0 a4t0 a3t0 b3t0 b2t0 a2t0 a1t0";
-//String mov = "e5e a5t000 b5t00 c3t0";
+//String mov = "a1e a5t000 b5t00 c3t0";
 
 int len;
 int curr_index = 0;
 
-void trim_string(String & mov, int & len) {
+void trim_string() {
 	String new_string = "";
 	for (size_t i = 0; i < mov.length(); i++ ) {
 		if (mov[i] != '\t' && mov[i] != '\n' && mov[i] != ' ') {
@@ -28,7 +28,11 @@ enum DIR get_dir_from_char(const String & dir) {
 	EAST;
 }
 
-bool eval_new_pos(Position & coord, const int & len, int & curr_index, const String & mov) {
+bool more_coordinates_left() {
+	return curr_index < len;
+}
+
+bool eval_new_pos(Position & coord) {
 	int x = 0;
 	int y = 0;
 	bool yBeforeX = false;
@@ -67,10 +71,12 @@ bool eval_new_pos(Position & coord, const int & len, int & curr_index, const Str
 			if (curr_index + 1 < len) {
 				char a1 = mov[curr_index];
 				char a2 = mov[curr_index + 1];
-				if ((isDigit(a1) && a1 >= offset_min[0] && a1 <= offset_max[0] && isAlpha(a2)) || (isAlpha(a1) && isDigit(a2) && a2 >= offset_min[0] && a2 <= offset_max[0])) {
-					_time += curr_char;
-					break;
-				}
+				if ((isDigit(a1) && a1 >= offset_min[0] && a1 <= offset_max[0] && isAlpha(a2)) ||
+					(isAlpha(a1) && isDigit(a2) && a2 >= offset_min[0] && a2 <= offset_max[0]))
+					{
+						_time += curr_char;
+						break;
+					}
 			}
 			_time += curr_char;
 		}
