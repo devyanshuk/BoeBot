@@ -9,6 +9,7 @@ unsigned long elapsed_time;
 unsigned long paused_time;
 
 bool button_was_pressed_twice = false;
+bool button_pressed_twice_at_end_point = false;
 
 bool got_initial_coordinate = false;
 
@@ -42,6 +43,7 @@ void reset_everything_else(){
 	curr_index = 0;
 	get_initial_coordinate();
 	paused_time = millis();
+	button_pressed_twice_at_end_point = false;
 }
 
 void update_sensors() {
@@ -75,6 +77,12 @@ void loop(void)
 	else {
 		if (button_was_pressed_twice){
 			button_was_pressed_twice = false;
+			boebot.stop_robot = false;
+		}
+		else if (!button_pressed_twice_at_end_point && boebot.button_press_count == 2 && curr_index >= len && boebot.current_coord == boebot.final_coord){
+			button_pressed_twice_at_end_point = true;
+			boebot.final_coord = boebot.initial_coord;
+			curr_index = 0;
 			boebot.stop_robot = false;
 		}
 		update_sensors();
