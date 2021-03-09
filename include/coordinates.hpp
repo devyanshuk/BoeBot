@@ -18,11 +18,11 @@ public:
 		return *this;
 	}
 
-	bool operator==(const Position & other) {
+	bool operator==(const Position & other) const {
 		return xpos == other.xpos && ypos == other.ypos;
 	}
 
-	bool operator!=(const Position & other){
+	bool operator!=(const Position & other) const {
 		return !(*this == other);
 	}
 };

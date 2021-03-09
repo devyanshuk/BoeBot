@@ -116,7 +116,7 @@ void Robot::move_forward_and_align() {
 	(!passed_coordinate && c && ((d && b) || (e && d) || (a && b) || (a && b && d && e)))) {
 		move_(1700, 1300);
 	}
-	else if (passed_coordinate){
+	else if (passed_coordinate) {
 		pause();
 		return;
 	}
@@ -132,17 +132,17 @@ void Robot::move_forward_and_align() {
 	else if (b && !c) {
 		move_(1560, 1560);
 	}
-	else if (!a && !b && !c && !d && !e && !passed_coordinate){
+	else if (!a && !b && !c && !d && !e && !passed_coordinate) {
 		move_(1700, 1300);
 	}
 }
 
-void Robot::align_middle_sensors_when_waiting(){
+void Robot::align_middle_sensors_when_waiting() {
 	bool b = current_sensors_state[1];
 	bool c = current_sensors_state[2];
 	bool d = current_sensors_state[3];
 
-	if ((c && !d && !b) || (!c && !d && !b)){
+	if ((c && !d && !b) || (!c && !d && !b)) {
 		pause();
 	}
 	else if (b && !c) {
@@ -231,12 +231,12 @@ void Robot::copy_previous_coordinate() {
 	current_coord = final_coord;
 }
 
-void Robot::rotate_to_a_certain_dir(){
+void Robot::rotate_to_a_certain_dir() {
 
 	DIR final_dir = initial_coord.dir;
 	DIR current_dir = current_coord.dir;
 
-	if (current_dir == final_dir){
+	if (current_dir == final_dir) {
 		return;
 	}
 
@@ -247,7 +247,7 @@ void Robot::rotate_to_a_certain_dir(){
 			     2 * axis_rotation_count :
 			     axis_rotation_count;
 
-	switch (current_dir){
+	switch (current_dir) {
 		case NORTH:
 			final_dir == WEST ? rightTurn() : leftTurn();
 			break;
@@ -262,7 +262,7 @@ void Robot::rotate_to_a_certain_dir(){
 			break;
 	}
 
-	if (rotation_when_dir_matters_count++ >= time_to_rotate){
+	if (rotation_when_dir_matters_count++ >= time_to_rotate) {
 		rotation_when_dir_matters_count = 0;
 		current_coord.dir = initial_coord.dir;
 	}
@@ -272,7 +272,6 @@ void Robot::rotate() {
 	if (rotated) {
 		being_rotated = false;
 	}
-
 	else if (yBeforeX || current_coord.xpos == final_coord.xpos) {
 		if (current_coord.ypos == final_coord.ypos) {
 			yBeforeX = false;
@@ -290,7 +289,7 @@ void Robot::rotate() {
 	else being_rotated = false;
 }
 
-bool Robot::directions_are_the_same(){
+bool Robot::directions_are_the_same() {
 	return direction_matters ? current_coord.dir == final_coord.dir : true;
 }
 
