@@ -255,9 +255,9 @@ bool Robot::button_has_been_pressed_only_once() {
 
 void Robot::check_if_button_has_been_pressed_after_end_of_movement() {
 	if (!button_pressed_twice_at_end_point &&
-	button_press_count == 2 &&
-	!more_coordinates_left() &&
-	current_and_final_coordinates_are_the_same())
+	    button_press_count == 2 &&
+	    !more_coordinates_left() &&
+	    current_and_final_coordinates_are_the_same())
 	{
 		button_pressed_twice_at_end_point = true;
 		final_coord = initial_coord;
