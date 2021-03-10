@@ -28,7 +28,6 @@ void initialize_if_serial_input_was_given() {
 		trim_string();
 		boebot.reset_initial_coordinate();
 		reset_boebot();
-		boebot.stop_robot = false;
 		boebot.button_press_count = 1;
 		Serial.println(new_mov);
 	}
