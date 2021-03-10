@@ -18,6 +18,7 @@ void setup()
 
 void loop(void)
 {
+	update_sensors(boebot);
 	boebot.check_for_button_press();
 	if (boebot.button_has_not_been_pressed_yet()) {
 		check_for_serial_input_and_update_movement();
@@ -34,7 +35,6 @@ void loop(void)
 		else {
 			boebot.check_if_button_has_been_pressed_after_end_of_movement();
 		}
-		update_sensors(boebot);
 		if (!boebot.stop_robot) {
 			if (boebot.current_and_final_coordinates_are_the_same()) {
 				if (!time_still_remaining(boebot) && more_coordinates_left()) {
