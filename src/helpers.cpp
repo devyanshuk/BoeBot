@@ -6,7 +6,18 @@ unsigned long tim_2 = millis();
 int digital_val = 1;
 int analog_val = 0;
 
+unsigned long elapsed_time = millis();
+unsigned long paused_time = millis();
+
 bool increase_analog_val = true;
+
+void update_time() {
+	elapsed_time = (millis() - paused_time) / 100;
+}
+
+bool time_still_remaining(const Robot & boebot) {
+	return (elapsed_time < boebot.final_coord.total_time);
+}
 
 void display_sensors(const bool (&new_state)[5]) {
 	for (size_t i = 0; i < 5; i++) {

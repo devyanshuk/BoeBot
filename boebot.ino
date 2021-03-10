@@ -5,9 +5,6 @@
 
 Robot boebot;
 
-unsigned long elapsed_time;
-unsigned long paused_time;
-
 bool robot_has_been_reset = false;
 bool serial_input_given = false;
 bool initialized_with_serial_input = false;
@@ -41,14 +38,6 @@ void setup()
 	pinMode(led_pin, OUTPUT);
 	trim_string();
 	boebot.set_initial_coordinate_and_get_current_coordinate();
-}
-
-void update_time() {
-	elapsed_time = (millis() - paused_time) / 100;
-}
-
-bool time_still_remaining() {
-	return (elapsed_time < boebot.final_coord.total_time);
 }
 
 void reset_boebot(){
@@ -88,7 +77,7 @@ void loop(void)
 		update_sensors();
 		if (!boebot.stop_robot) {
 			if (boebot.current_and_final_coordinates_are_the_same()) {
-				if (!time_still_remaining() && more_coordinates_left()) {
+				if (!time_still_remaining(boebot) && more_coordinates_left()) {
 					if (boebot.button_has_been_pressed_only_once()){
 						boebot.get_next_position_to_go_to();
 					}
@@ -104,7 +93,7 @@ void loop(void)
 						}
 					}
 				}
-				else if (more_coordinates_left() && time_still_remaining()) {
+				else if (more_coordinates_left() && time_still_remaining(boebot)) {
 					boebot.align_middle_sensors_when_waiting();
 				}
 				else if (!more_coordinates_left()) {
